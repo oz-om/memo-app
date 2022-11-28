@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-mono;
+  }
+  img {
+    @apply w-full h-full object-cover;
+  }
+  .notes {
+    height: calc(100vh - 126px);
+  }
+}
+
+.active {
+  @apply border-orange-300 rounded text-orange-400 bg-orange-100/25
+}
