@@ -2,7 +2,7 @@ import Note from './note/Note';
 import Masonry from "react-responsive-masonry"
 
 import {Component} from 'react'
-import {getUser} from '../../api/api'
+import {getNotes} from '../../api/api'
 
 export default class Notes extends Component {
   constructor(props){
@@ -13,7 +13,7 @@ export default class Notes extends Component {
   }
   
   componentDidMount () {
-    getUser().then(data => {
+    getNotes().then(data => {
       this.setState({
         notes:data
       })

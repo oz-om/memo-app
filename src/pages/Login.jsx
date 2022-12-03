@@ -1,21 +1,17 @@
 
 import {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux"
 import {Method, Line, Input, FormBtn} from "../components/form";
 import Footer from "../components/Footer";
+import axios from "axios";
+import {loginAction} from "../store/reducers";
 
 export default function Login() {
+  const state = useSelector(state => state);
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  async function isUser(){
-    let req = await fetch('http://127.0.0.1:4011/isuser');
-    let res = await req.json();
-    console.log(res)
-  }
-  useEffect(()=>{
-    console.log("get user state");
-    isUser()
-  }, []);
   
   function collectData(data, method) {
     method(data.target.value)
@@ -23,16 +19,19 @@ export default function Login() {
   async function login(e){
     e.preventDefault();
     const data = {email,password};
-    const options = {
-      method:'POST',
+    const options = { 
       headers: {
-        'Content-type':'application/json',
+      'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      withCredentials: true
     }
-    const req = await fetch("http://127.0.0.1:4011/login", options);
-    const res = await req.json();
-    console.log(res)
+    const req = await axios.post("http://127.0.0.1:4011/login", data, options);
+    const res = await req.data;
+    
+    console.log(res);
+    console.log(state);
+    dispatch(loginAction(res.login))
+    console.log(state);
   }
   
   const boxStyle = "border border-blue-300 rounded-xl relative pb-3 pt-7 w-80 mx-auto";
