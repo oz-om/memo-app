@@ -1,9 +1,11 @@
-import Search from "./body/Search";
+import SearchAndAdd from "./body/SearchAnaAdd";
 import Bar from "./body/Bar";
 import Notes from "./body/Notes";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateBlock from "./body/CreateBlock";
+import FoldersBlock from "./body/FoldersBlock";
 
 export default function Body() {
   // @ts-ignore
@@ -15,10 +17,14 @@ export default function Body() {
     }
   }, [userReducer.userState]);
   return (
-    <main className='container'>
-      <Search />
-      <Bar />
-      <Notes />
+    <main className='mainBody pt-5 overflow-hidden relative'>
+      <div className='container'>
+        <SearchAndAdd />
+        <Bar />
+        <Notes />
+      </div>
+      <CreateBlock />
+      <FoldersBlock />
     </main>
   );
 }

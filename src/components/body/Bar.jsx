@@ -1,33 +1,54 @@
-import Folder from './Bar/Folder'
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { updateActivated } from "../../store/reducers";
+import BarFolder from "./folder/BarFolder";
 
-function active_toggle(e){
-  document.querySelector('.all').classList.remove('active');
-  document.querySelectorAll('.folders li').forEach(li => {
-    li.classList.remove('active')
-  })
-  e.target.classList.add('active')
+function getFoldersBlock() {
+  document.querySelector(".foldersBlock").classList.toggle("hidden");
 }
-
-let folders = [
-    {id:1,name:'daily'},
-    {id:2,name:'weekend'},
-    {id:3,name:'demo'}];
-
-let folder_li = folders.map(folder =>
-    <Folder key={folder.id} name={folder.name} click={active_toggle} />)
-  
 export default function Bar() {
+  //@ts-ignore
+  const { foldersReducer, activatedReducer } = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  function active_toggle(e) {
+    document.querySelector(".all").classList.remove("active");
+    document.querySelectorAll(".folders li").forEach((li) => {
+      li.classList.remove("active");
+    });
+    e.target.classList.add("active");
+    dispatch(updateActivated(e.target.textContent));
+  }
+  function autoActiveFolder() {
+    let allFolders = Array.from(document.querySelectorAll(".folders li"));
+    allFolders.forEach((li) => {
+      //@ts-ignore
+      if (li.dataset.name == activatedReducer) {
+        li.classList.add("active");
+      } else {
+        li.classList.remove("active");
+      }
+    });
+  }
+  useEffect(() => {
+    if (foldersReducer.length > 0) {
+      autoActiveFolder();
+    }
+  }, [activatedReducer]);
+
+  let folder_li = foldersReducer.map((folder) => <BarFolder key={folder} name={folder} click={active_toggle} />);
+
   return (
-    <div className="bar p-1 my-3 grid grid-cols-two shadow">
-      <ul className="flex gap-x-2">
-        <li className="all rounded px-4 py-2 cursor-pointer border border-transparent active" onClick={active_toggle}>All</li>
-        <ul className="folders flex overflow-auto">
-          {folder_li}
-        </ul>
+    <div className='bar p-1 my-3 grid grid-cols-two shadow'>
+      <ul className='flex gap-x-2'>
+        <li className='all rounded px-4 py-2 cursor-pointer border border-transparent active' onClick={active_toggle}>
+          All
+        </li>
+        <ul className='folders flex overflow-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>{folder_li}</ul>
       </ul>
-      <span className="flex items-center">
-        <i className="iconoir-folder rounded px-4 py-2 font-black text-orange-400 text-xl bg-orange-100/25 cursor-pointer"></i>
+      <span className='flex items-center' onClick={() => getFoldersBlock()}>
+        <i className='iconoir-folder rounded px-4 py-2 font-black text-orange-400 text-xl bg-orange-100/25 cursor-pointer'></i>
       </span>
     </div>
-  )
+  );
 }

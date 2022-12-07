@@ -9,11 +9,24 @@
   img {
     @apply w-full h-full object-cover;
   }
+  .mainBody {
+    height: calc(100vh - 52px);
+  }
   .notes {
     height: calc(100vh - 126px);
+  }
+  .createBlock .noteView {
+    grid-template-columns: minmax(170px, 1fr) minmax(auto, 75px);
+  }
+  .noteContent textarea {
+    height: calc(100vh - 154px);
   }
 }
 
 .active {
-  @apply border-orange-300 rounded text-orange-400 bg-orange-100/25
+  @apply border-orange-300 rounded text-orange-400 bg-orange-100/25;
+}
+
+.activatedFolder {
+  @apply border-orange-400 bg-orange-50;
 }

@@ -19,7 +19,7 @@ export default function Menu() {
   return (
     <div className='menu'>
       <i className='iconoir-add-keyframes text-3xl cursor-pointer' onClick={toggleMenu}></i>
-      <ul className='fixed h-full w-2/4 top-0 left-0 bg-slate-700 space-y-3 text-white hidden z-10'>
+      <ul className='fixed h-full w-72 top-0 left-0 bg-slate-700 space-y-3 text-white hidden z-10'>
         <li className='flex justify-end py-3 mb-2 text-indigo-300' onClick={toggleMenu}>
           <i className='iconoir-fast-arrow-left-box text-3xl cursor-pointer'></i>
         </li>
@@ -32,7 +32,7 @@ export default function Menu() {
         ) : (
           <>
             <LiElement path='/log-in' name='login' />
-            <LiElement path='/sign-n' name='register' />
+            <LiElement path='/sign-in' name='register' />
           </>
         )}
         <LiElement path='/about' name='about' />

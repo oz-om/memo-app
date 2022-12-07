@@ -7,18 +7,23 @@ import Signin from "./pages/Signin";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import { useSelector, useDispatch } from "react-redux";
-import { isUser } from "./store/reducers";
+import { isUser, fetchFolders, fetchNotes } from "./store/reducers";
 
 export default function App() {
-  // @ts-ignore
+  //@ts-ignore
   const { userReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   useEffect(() => {
     // @ts-ignore
     dispatch(isUser());
-  }, []);
+    if (userReducer.userState) {
+      //@ts-ignore
+      dispatch(fetchFolders({ ownerId: userReducer.user.id }));
+      //@ts-ignore
+      dispatch(fetchNotes({ ownerId: userReducer.user.id }));
+    }
+  }, [userReducer.userState]);
 
-  // const home = userReducer ? <Body /> : <Login />;
   return (
     <>
       <Head />
