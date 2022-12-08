@@ -16,6 +16,7 @@ export default function Note(props) {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
     };
     const req = await axios.post("http://127.0.0.1:4011/deleteNote", { noteId }, options);
     const res = await req.data;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { pushFolder, removeFolder, reNameFolder, switchModifyMode } from "../../../store/reducers";
 
@@ -27,6 +27,7 @@ export default function Folder(props) {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
     };
     const req = await axios.post("http://127.0.0.1:4011/addFolder", folder, options);
     const res = await req.data;
@@ -47,6 +48,7 @@ export default function Folder(props) {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
     };
     const req = await axios.post("http://127.0.0.1:4011/deleteFolder", selectedFolder, options);
     const res = await req.data;
@@ -77,6 +79,7 @@ export default function Folder(props) {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
     };
     const req = await axios.post("http://127.0.0.1:4011/renameFolder", update, options);
     const res = await req.data;
@@ -88,10 +91,15 @@ export default function Folder(props) {
     }
   }
 
-  const { itemsCount, name, modifyMode } = props;
+  const { itemsCount, name, modifyMode, method } = props;
   return (
-    <div data-name={name} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 px-2 py-2 rounded-md cursor-pointer hover:bg-orange-50'>
-      <div className='info flex gap-x-1 items-center w-full'>
+    <div data-name={name} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-orange-50'>
+      <div
+        onClick={(e) => {
+          !modifyMode && method(e.currentTarget);
+        }}
+        className='info flex gap-x-1 items-center w-full px-2 py-3'
+      >
         <span className='text-[12px]'>{modifyMode ? 0 : itemsCount}</span>
         <div className='folderName relative w-full grid content-center h-6 -top-[2px]'>
           <h2 id={"folder_name_" + name} className='text-lg font-black px-2'>

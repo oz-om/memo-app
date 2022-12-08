@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { pushNote } from "../../store/reducers";
@@ -49,6 +48,7 @@ export default function CreateBlock() {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
     };
     const req = await axios.post("http://127.0.0.1:4011/addNote", Note, options);
     const res = await req.data;

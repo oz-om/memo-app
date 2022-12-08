@@ -12,7 +12,7 @@ export default function Bar() {
   const dispatch = useDispatch();
 
   function active_toggle(e) {
-    document.querySelector(".all").classList.remove("active");
+    document.querySelector(".bar .all").classList.remove("active");
     document.querySelectorAll(".folders li").forEach((li) => {
       li.classList.remove("active");
     });
@@ -20,7 +20,12 @@ export default function Bar() {
     dispatch(updateActivated(e.target.textContent));
   }
   function autoActiveFolder() {
-    let allFolders = Array.from(document.querySelectorAll(".folders li"));
+    if (activatedReducer == "All") {
+      document.querySelector(".bar .all").classList.add("active");
+    } else {
+      document.querySelector(".bar .all").classList.remove("active");
+    }
+    let allFolders = Array.from(document.querySelectorAll(".bar .folders li"));
     allFolders.forEach((li) => {
       //@ts-ignore
       if (li.dataset.name == activatedReducer) {
