@@ -91,6 +91,14 @@ export const notesSlice = createSlice({
     pushNote: function (state, action) {
       state.push(action.payload);
     },
+    updateNote: function (state, action) {
+      const specificNote = state.find((note) => {
+        return note.id == action.payload.id;
+      });
+      specificNote.title = action.payload.newTitle;
+      specificNote.note = action.payload.newNote;
+      return state;
+    },
     removeNote: function (state, action) {
       const updated = state.filter((note) => note.id !== action.payload);
       return (state = updated);
@@ -100,8 +108,29 @@ export const notesSlice = createSlice({
     builder.addCase(fetchNotes.fulfilled, (state, action) => (state = action.payload));
   },
 });
-export const { pushNote, removeNote } = notesSlice.actions;
+export const { pushNote, removeNote, updateNote } = notesSlice.actions;
 export const notesReducer = notesSlice.reducer;
+
+const modifyNoteSlice = createSlice({
+  name: "modifyNote",
+  initialState: {
+    editMode: false,
+    id: null,
+    title: "",
+    note: "",
+  },
+  reducers: {
+    switchNoteModifyMode: function (state, action) {
+      state.editMode = action.payload.editMode;
+      state.id = action.payload.id;
+      state.title = action.payload.title;
+      state.note = action.payload.note;
+      return state;
+    },
+  },
+});
+export const { switchNoteModifyMode } = modifyNoteSlice.actions;
+export const noteModifyMode = modifyNoteSlice.reducer;
 
 // folders slice
 export const fetchFolders = createAsyncThunk("folders/fetchFolders", async (ownerId) => {

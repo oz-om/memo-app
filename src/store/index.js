@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { activatedReducer, folderModifyMode, foldersReducer, loginReducer, notesReducer, registerReducer, userReducer } from "./reducers";
+import { activatedReducer, folderModifyMode, foldersReducer, loginReducer, noteModifyMode, notesReducer, registerReducer, userReducer } from "./reducers";
 export const store = configureStore({
   reducer: {
     userReducer,
@@ -9,5 +9,6 @@ export const store = configureStore({
     foldersReducer,
     folderModifyMode,
     activatedReducer,
+    noteModifyMode,
   },
 });

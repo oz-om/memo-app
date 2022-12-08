@@ -58,7 +58,6 @@ export default function Notes() {
       {setupNotes.length > 0 ? (
         <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
           {setupNotes}
-          <input />
         </Masonry>
       ) : (
         <EmptyBlock />

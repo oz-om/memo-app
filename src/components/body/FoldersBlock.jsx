@@ -48,7 +48,7 @@ export default function FoldersBlock() {
         <h2 className='basis-10/12 text-center font-bold absolute  w-40 translate-x-[50%] right-[50%] top-0'>folders</h2>
       </div>
       <div style={{ height: "calc(100vh - 163px)" }} className='foldersContainer overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
-        <div data-name='All' className='folder  bg-gray-100 border mx-2 mb-1 rounded-md cursor-pointer hover:bg-orange-50 activatedFolder'>
+        <div data-name='All' className='folder  bg-gray-100 border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent activatedFolder'>
           <div
             onClick={(e) => {
               activeFolder(e.currentTarget);

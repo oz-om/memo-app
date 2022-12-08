@@ -93,7 +93,7 @@ export default function Folder(props) {
 
   const { itemsCount, name, modifyMode, method } = props;
   return (
-    <div data-name={name} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-orange-50'>
+    <div data-name={name} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent'>
       <div
         onClick={(e) => {
           !modifyMode && method(e.currentTarget);

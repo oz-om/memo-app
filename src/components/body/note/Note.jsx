@@ -1,17 +1,21 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { removeNote } from "../../../store/reducers";
+import { useSelector, useDispatch } from "react-redux";
+import { removeNote, switchNoteModifyMode } from "../../../store/reducers";
 
-function toggleOptions(e) {
-  const optionsList = e.target.nextElementSibling;
-  optionsList.classList.toggle("hidden");
+function toggleOptions(target) {
+  target.nextElementSibling.classList.toggle("hidden");
+}
+function getCreateBlock() {
+  document.querySelector(".createBlock").classList.toggle("hidden");
 }
 
 export default function Note(props) {
+  //@ts-ignore
+  const { notesReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   async function deleteNote(ele) {
-    const noteId = ele.parentElement.id;
+    const noteId = ele.dataset.delete;
     const options = {
       headers: {
         "Content-Type": "application/json",
@@ -24,21 +28,29 @@ export default function Note(props) {
       dispatch(removeNote(+noteId));
     }
   }
+  function editNote(edit) {
+    getCreateBlock();
+    const specificNote = notesReducer.filter((note) => {
+      return note.id == edit.dataset.edit;
+    });
+    dispatch(switchNoteModifyMode({ editMode: true, title: specificNote[0].title, note: specificNote[0].note, id: specificNote[0].id }));
+    edit.parentElement.classList.toggle("hidden");
+  }
   const { id, title, note, atTime, folder } = props;
   return (
-    <div datatype={folder} className='Note bg-orange-100/25 p-4 mb-3.5 rounded-lg max-h-48 shadow'>
+    <div data-name={folder} className='Note bg-orange-100/25 p-4 mb-3.5 rounded-lg max-h-48 shadow'>
       <h4 className='font-bold'>{title}</h4>
-      <p className='text-black/[.85] line-clamp-5'>{note}</p>
+      <pre className='text-black/[.85] line-clamp-5 whitespace-pre-line'>{note}</pre>
       <div className='details flex justify-between'>
         <span className='text-black/50 text-sm'>{atTime}</span>
         <div className='options relative'>
-          <i onClick={(e) => toggleOptions(e)} className='iconoir-more-vert cursor-pointer font-black text-xl bg-orange-100/50 rounded'></i>
+          <i onClick={(e) => toggleOptions(e.target)} className='iconoir-more-vert cursor-pointer font-black text-xl bg-orange-100/50 rounded'></i>
           <ul className='noteControlsOptions absolute right-0 backdrop-blur-md shadow-md rounded-md text-sm hidden'>
-            <li className='flex gap-x-1 items-center px-2 text-emerald-400 bg-emerald-50 cursor-pointer'>
+            <li data-edit={id} onClick={(e) => editNote(e.currentTarget)} className='flex gap-x-1 items-center px-2 text-emerald-400 bg-emerald-50 cursor-pointer'>
               <i className='iconoir-edit'></i>
               <span>edit</span>
             </li>
-            <li id={id} onClick={(e) => deleteNote(e.target)} className='flex gap-x-1 items-center px-2 text-red-400 bg-red-50 cursor-pointer'>
+            <li data-delete={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2 text-red-400 bg-red-50 cursor-pointer'>
               <i className='iconoir-trash'></i>
               <span>delete</span>
             </li>
