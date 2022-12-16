@@ -3,15 +3,87 @@ import { useSelector, useDispatch } from "react-redux";
 import { pushNote, switchNoteModifyMode, updateNote } from "../../store/reducers";
 import axios from "axios";
 
+let editor;
+let editorDoc;
+window.onload = () => {
+  editor = document.querySelector(".createBlock .noteContent iframe");
+};
+let textActions = [
+  {
+    key: "1",
+    icon: "iconoir-align-left",
+    cmd: "justifyLeft",
+  },
+  {
+    key: "2",
+    icon: "iconoir-align-center",
+    cmd: "justifyCenter",
+  },
+  {
+    key: "3",
+    icon: "iconoir-align-right",
+    cmd: "justifyRight",
+  },
+  {
+    key: "4",
+    icon: "iconoir-italic",
+    cmd: "italic",
+  },
+  {
+    key: "5",
+    icon: "iconoir-underline",
+    cmd: "underline",
+  },
+  {
+    key: "6",
+    icon: "iconoir-bold",
+    cmd: "bold",
+  },
+];
+
+function TextControl(props) {
+  const { icon, style, cmd } = props;
+  return (
+    <i
+      onClick={(e) => {
+        applyEffect(e.target);
+      }}
+      data-cmd={cmd}
+      className={icon + " " + style}
+    ></i>
+  );
+}
+
+function applyEffect(target) {
+  // @ts-ignore
+  let cmd = target.dataset.cmd;
+  // @ts-ignore
+  let value = target.dataset.value;
+  if (value) {
+    if (value == "insertImage") {
+      let actionValue = prompt("value :");
+      editorDoc.execCommand(cmd, false, actionValue);
+    } else {
+      editorDoc.execCommand(cmd, false, value);
+    }
+  } else {
+    editorDoc.execCommand(cmd, false, null);
+  }
+}
+
 function goBack() {
   document.querySelector(".createBlock").classList.toggle("hidden");
   setInputs("", "");
 }
+
 function setInputs(title, note) {
   let noteTitle = document.querySelector(".noteContent .title input");
-  let noteContent = document.querySelector(".noteContent .note textarea");
+  // @ts-ignore
   noteTitle.value = title;
-  noteContent.value = note;
+  // @ts-ignore
+  if (editorDoc) {
+    editorDoc.body.innerHTML = note;
+  }
 }
 
 function checkChanges(newChanges, defaultValue) {
@@ -31,15 +103,31 @@ function checkChanges(newChanges, defaultValue) {
 
 function validStyle() {
   let saveChangesBtn = document.querySelector(".saveChanges");
-  saveChangesBtn.classList.remove("pointer-events-none");
-  saveChangesBtn.classList.add("text-green-400", "border-green-400");
+  if (saveChangesBtn) {
+    saveChangesBtn.classList.remove("pointer-events-none", "text-green-200", "border-green-100");
+    saveChangesBtn.classList.add("text-green-400", "border-green-400");
+  }
 }
 
 function showFonts() {
   document.querySelector(".fonts ul").classList.toggle("hidden");
 }
+
 function showThemes() {
   document.querySelector(".themeColor ul").classList.toggle("hidden");
+  document.querySelector(".themeColor ul").classList.toggle("flex");
+}
+
+function getFolder() {
+  const folders = document.querySelectorAll(".mainBody .folders li");
+  const folder = [...folders].filter((f) => {
+    return f.classList.contains("active");
+  });
+  if (folder.length > 0) {
+    return folder[0].textContent;
+  } else {
+    return "all";
+  }
 }
 
 export default function CreateBlock() {
@@ -48,26 +136,25 @@ export default function CreateBlock() {
   const dispatch = useDispatch();
   const [title, setTitleNote] = useState("");
   const [note, setNote] = useState("");
+  if (editor) {
+    editorDoc = editor.contentDocument;
+    editorDoc.designMode = "on";
 
-  function getFolder() {
-    const folders = document.querySelectorAll(".mainBody .folders li");
-    const folder = [...folders].filter((f) => {
-      return f.classList.contains("active");
-    });
-    if (folder.length > 0) {
-      return folder[0].textContent;
-    } else {
-      return "all";
-    }
+    editorDoc.oninput = () => {
+      validStyle();
+      setNote(editorDoc.body.innerHTML);
+    };
   }
+
   async function addNote() {
     const Note = {
       ownerId: userReducer.user.id,
       title,
-      note,
+      note: editorDoc.body.innerHTML,
       folder: getFolder(),
       atTime: `${new Date().toLocaleDateString("en-CA")} ${new Date().toLocaleTimeString("ca")}`,
     };
+
     const options = {
       headers: {
         "Content-Type": "application/json",
@@ -81,6 +168,7 @@ export default function CreateBlock() {
       goBack();
     }
   }
+
   function cancel() {
     dispatch(switchNoteModifyMode({ editMode: false, title: "", note: "", id: null }));
     setNote("");
@@ -98,7 +186,6 @@ export default function CreateBlock() {
       cancel();
     }
   }
-
   async function saveChanges() {
     const Note = {
       id: noteModifyMode.id,
@@ -116,6 +203,7 @@ export default function CreateBlock() {
       const res = await req.data;
       if (res.isUpdate) {
         dispatch(updateNote(Note));
+        goBack();
       }
     }
   }
@@ -151,14 +239,9 @@ export default function CreateBlock() {
         </div>
         <div className='noteView text-xl border-b border-b-gray-300 pb-2 grid px-2 gap-x-2'>
           <div className='textControls flex gap-x-4 items-center overflow-x-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
-            <i className={"iconoir-align-left " + textControlsStyle}></i>
-            <i className={"iconoir-align-center " + textControlsStyle}></i>
-            <i className={"iconoir-align-right " + textControlsStyle}></i>
-            <i className={"iconoir-italic " + textControlsStyle}></i>
-            <i className={"iconoir-underline " + textControlsStyle}></i>
-            <i className={"iconoir-bold " + textControlsStyle}></i>
-            <i className={"iconoir-text " + textControlsStyle}></i>
-            <i className={"iconoir-text-size " + textControlsStyle}></i>
+            {textActions.map((action) => {
+              return <TextControl key={action.key} icon={action.icon} style={textControlsStyle} cmd={action.cmd} />;
+            })}
           </div>
           <div className='theme flex justify-center gap-x-5'>
             <div className='fonts relative'>
@@ -170,7 +253,7 @@ export default function CreateBlock() {
             </div>
             <div className='themeColor relative'>
               <i className='iconoir-flower cursor-pointer' onClick={() => showThemes()}></i>
-              <ul className='absolute flex hidden right-0 mt-2 gap-1 bg-orange-200 p-1 rounded'>
+              <ul className='absolute hidden right-0 mt-2 gap-1 bg-orange-200 p-1 rounded'>
                 <li className='h-6 w-10 rounded cursor-pointer bg-red-400'></li>
                 <li className='h-6 w-10 rounded cursor-pointer bg-orange-400'></li>
                 <li className='h-6 w-10 rounded cursor-pointer bg-blue-400'></li>
@@ -181,7 +264,7 @@ export default function CreateBlock() {
             </div>
           </div>
         </div>
-        <div className='noteContent bg-red-100'>
+        <div className='noteContent'>
           <div className='title'>
             <input
               type='text'
@@ -194,19 +277,27 @@ export default function CreateBlock() {
               className='w-full outline-none font-black text-lg pl-2 py-2'
             />
           </div>
-          <div className='note'>
-            <textarea
-              placeholder='start typing'
-              onInput={(e) => {
-                validStyle();
-                //@ts-ignore
-                setNote(e.target.value);
-              }}
-              className='resize-none w-full outline-none pl-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'
-            ></textarea>
+          <div className='note w-full h-'>
+            <iframe className='w-full h-full outline-none bg-white'></iframe>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+/*
+<textarea
+  placeholder='start typing'
+  onInput={(e) => {
+    validStyle();
+    //@ts-ignore
+    setNote(e.target.value);
+  }}
+  className='resize-none w-full outline-none pl-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'
+></textarea>
+
+
+
+
+*/

@@ -18,7 +18,7 @@
   .createBlock .noteView {
     grid-template-columns: minmax(170px, 1fr) minmax(auto, 75px);
   }
-  .noteContent textarea {
+  .noteContent iframe {
     height: calc(100vh - 154px);
   }
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeNote, switchNoteModifyMode } from "../../../store/reducers";
 
@@ -37,10 +38,13 @@ export default function Note(props) {
     edit.parentElement.classList.toggle("hidden");
   }
   const { id, title, note, atTime, folder } = props;
+
   return (
     <div data-name={folder} className='Note bg-orange-100/25 p-4 mb-3.5 rounded-lg max-h-48 shadow'>
       <h4 className='font-bold'>{title}</h4>
-      <pre className='text-black/[.85] line-clamp-5 whitespace-pre-line'>{note}</pre>
+
+      <div dangerouslySetInnerHTML={{ __html: note }} className='shortNote text-black/[.85] line-clamp-5 whitespace-pre-line'></div>
+      {/* <div className='shortNote text-black/[.85] line-clamp-5 whitespace-pre-line'>{note}</div> */}
       <div className='details flex justify-between'>
         <span className='text-black/50 text-sm'>{atTime}</span>
         <div className='options relative'>
@@ -60,3 +64,5 @@ export default function Note(props) {
     </div>
   );
 }
+
+// export default React.memo(Note)
