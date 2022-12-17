@@ -3,62 +3,74 @@ import { useSelector, useDispatch } from "react-redux";
 import { pushNote, switchNoteModifyMode, updateNote } from "../../store/reducers";
 import axios from "axios";
 
-let editor;
-let editorDoc;
-window.onload = () => {
-  editor = document.querySelector(".createBlock .noteContent iframe");
-};
 let textActions = [
   {
     key: "1",
     icon: "iconoir-align-left",
     cmd: "justifyLeft",
+    group: "position",
   },
   {
     key: "2",
     icon: "iconoir-align-center",
     cmd: "justifyCenter",
+    group: "position",
   },
   {
     key: "3",
     icon: "iconoir-align-right",
     cmd: "justifyRight",
+    group: "position",
   },
   {
     key: "4",
     icon: "iconoir-italic",
     cmd: "italic",
+    group: "noGroup",
   },
   {
     key: "5",
     icon: "iconoir-underline",
     cmd: "underline",
+    group: "noGroup",
   },
   {
     key: "6",
     icon: "iconoir-bold",
     cmd: "bold",
+    group: "noGroup",
   },
 ];
 
 function TextControl(props) {
-  const { icon, style, cmd } = props;
+  const { icon, style, cmd, group } = props;
   return (
     <i
       onClick={(e) => {
         applyEffect(e.target);
       }}
       data-cmd={cmd}
-      className={icon + " " + style}
+      data-group={group}
+      className={icon + " border rounded-md " + style}
     ></i>
   );
 }
 
 function applyEffect(target) {
   // @ts-ignore
+  let editorDoc = document.querySelector(".createBlock .noteContent iframe").contentDocument;
   let cmd = target.dataset.cmd;
-  // @ts-ignore
   let value = target.dataset.value;
+  let group = target.dataset.group;
+  if (group != "noGroup") {
+    document.querySelectorAll(`[data-group=${group}]`).forEach((ele) => {
+      ele.classList.remove("border-blue-400");
+    });
+    target.classList.add("border-blue-400");
+  } else {
+    target.classList.toggle("border-blue-400");
+  }
+
   if (value) {
     if (value == "insertImage") {
       let actionValue = prompt("value :");
@@ -78,6 +90,8 @@ function goBack() {
 
 function setInputs(title, note) {
   let noteTitle = document.querySelector(".noteContent .title input");
+  //@ts-ignore
+  let editorDoc = document.querySelector(".createBlock .noteContent iframe").contentDocument;
   // @ts-ignore
   noteTitle.value = title;
   // @ts-ignore
@@ -136,21 +150,19 @@ export default function CreateBlock() {
   const dispatch = useDispatch();
   const [title, setTitleNote] = useState("");
   const [note, setNote] = useState("");
-  if (editor) {
-    editorDoc = editor.contentDocument;
-    editorDoc.designMode = "on";
 
+  function initIframeDoc(iframe) {
+    let editorDoc = iframe.contentDocument;
     editorDoc.oninput = () => {
       validStyle();
       setNote(editorDoc.body.innerHTML);
     };
   }
-
   async function addNote() {
     const Note = {
       ownerId: userReducer.user.id,
       title,
-      note: editorDoc.body.innerHTML,
+      note,
       folder: getFolder(),
       atTime: `${new Date().toLocaleDateString("en-CA")} ${new Date().toLocaleTimeString("ca")}`,
     };
@@ -187,12 +199,12 @@ export default function CreateBlock() {
     }
   }
   async function saveChanges() {
-    const Note = {
-      id: noteModifyMode.id,
-      newTitle: checkChanges(title, noteModifyMode.title).inputValue,
-      newNote: checkChanges(note, noteModifyMode.note).inputValue,
-    };
     if (checkChanges(title, noteModifyMode.title).isChanged || checkChanges(note, noteModifyMode.note).isChanged) {
+      const Note = {
+        id: noteModifyMode.id,
+        newTitle: checkChanges(title, noteModifyMode.title).inputValue,
+        newNote: checkChanges(note, noteModifyMode.note).inputValue,
+      };
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -240,7 +252,7 @@ export default function CreateBlock() {
         <div className='noteView text-xl border-b border-b-gray-300 pb-2 grid px-2 gap-x-2'>
           <div className='textControls flex gap-x-4 items-center overflow-x-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
             {textActions.map((action) => {
-              return <TextControl key={action.key} icon={action.icon} style={textControlsStyle} cmd={action.cmd} />;
+              return <TextControl key={action.key} icon={action.icon} style={textControlsStyle} cmd={action.cmd} group={action.group} />;
             })}
           </div>
           <div className='theme flex justify-center gap-x-5'>
@@ -278,7 +290,13 @@ export default function CreateBlock() {
             />
           </div>
           <div className='note w-full h-'>
-            <iframe className='w-full h-full outline-none bg-white'></iframe>
+            <iframe
+              onMouseEnter={(e) => {
+                // @ts-ignore
+                initIframeDoc(e.target);
+              }}
+              className='w-full h-full outline-none bg-white'
+            ></iframe>
           </div>
         </div>
       </div>

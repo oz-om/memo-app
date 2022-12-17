@@ -1,5 +1,7 @@
 function getCreateBlock() {
   document.querySelector(".createBlock").classList.toggle("hidden");
+  // @ts-ignore
+  document.querySelector(".noteContent iframe").contentDocument.designMode = "on";
 }
 
 export default function SearchAndAdd() {
