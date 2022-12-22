@@ -38,16 +38,16 @@ export default function Notes() {
     let initNotes;
     if (activatedReducer == "All") {
       initNotes = notesReducer.map((n) => {
-        const { id, title, note, folder, atTime } = n;
-        return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} />;
+        const { id, title, note, folder, atTime, bgColor, color } = n;
+        return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
       });
     } else {
       let activatedOnly = notesReducer.filter((active) => {
         return active.folder == activatedReducer;
       });
       initNotes = activatedOnly.map((n) => {
-        const { id, title, note, folder, atTime } = n;
-        return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} />;
+        const { id, title, note, folder, atTime, bgColor, color } = n;
+        return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
       });
     }
     setNotes(initNotes);

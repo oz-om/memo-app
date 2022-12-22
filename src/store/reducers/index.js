@@ -97,6 +97,8 @@ export const notesSlice = createSlice({
       });
       specificNote.title = action.payload.newTitle;
       specificNote.note = action.payload.newNote;
+      specificNote.bgColor = action.payload.bgColor;
+      specificNote.color = action.payload.color;
       return state;
     },
     removeNote: function (state, action) {
@@ -111,6 +113,7 @@ export const notesSlice = createSlice({
 export const { pushNote, removeNote, updateNote } = notesSlice.actions;
 export const notesReducer = notesSlice.reducer;
 
+// modify mode
 const modifyNoteSlice = createSlice({
   name: "modifyNote",
   initialState: {
@@ -118,6 +121,8 @@ const modifyNoteSlice = createSlice({
     id: null,
     title: "",
     note: "",
+    bgColor: "",
+    color: "",
   },
   reducers: {
     switchNoteModifyMode: function (state, action) {
@@ -125,6 +130,8 @@ const modifyNoteSlice = createSlice({
       state.id = action.payload.id;
       state.title = action.payload.title;
       state.note = action.payload.note;
+      state.bgColor = action.payload.bgColor;
+      state.color = action.payload.color;
       return state;
     },
   },

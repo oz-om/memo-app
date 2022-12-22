@@ -1,7 +1,15 @@
 function getCreateBlock() {
   document.querySelector(".createBlock").classList.toggle("hidden");
   // @ts-ignore
-  document.querySelector(".noteContent iframe").contentDocument.designMode = "on";
+  let iframe = document.querySelector(".noteContent iframe");
+  //@ts-ignore
+  iframe.contentDocument.designMode = "on";
+  //@ts-ignore
+  iframe.contentDocument.body.style.margin = "0";
+  //@ts-ignore
+  iframe.contentDocument.body.style.padding = "8px";
+  //@ts-ignore
+  window.myEditor = iframe.contentDocument.body;
 }
 
 export default function SearchAndAdd() {

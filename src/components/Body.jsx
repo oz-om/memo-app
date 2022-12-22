@@ -4,7 +4,7 @@ import Notes from "./body/Notes";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateBlock from "./body/CreateBlock";
+import Editor from "./body/Editor";
 import FoldersBlock from "./body/FoldersBlock";
 
 export default function Body() {
@@ -23,7 +23,7 @@ export default function Body() {
         <Bar />
         <Notes />
       </div>
-      <CreateBlock />
+      <Editor />
       <FoldersBlock />
     </main>
   );

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --editor-color: unset;
+  --editor-bgColor: white;
+}
+
 @layer base {
   body {
     @apply font-mono;
@@ -13,12 +18,16 @@
     height: calc(100vh - 52px);
   }
   .notes {
-    height: calc(100vh - 126px);
+    height: calc(100vh - 155px);
   }
   .createBlock .noteView {
     grid-template-columns: minmax(170px, 1fr) minmax(auto, 75px);
   }
-  .noteContent iframe {
+  .noteContent .title input {
+    background-color: var(--editor-bgColor);
+    color: var(--editor-color);
+  }
+  .noteContent .note iframe {
     height: calc(100vh - 154px);
   }
 }
