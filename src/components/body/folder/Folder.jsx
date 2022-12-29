@@ -1,11 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { pushFolder, removeFolder, reNameFolder, switchModifyMode } from "../../../store/reducers";
 
 export default function Folder(props) {
   //@ts-ignore
-  const { userReducer, activatedReducer } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
   const [newFolder, setNewFolder] = useState("");
   const [renameState, setRenameState] = useState(false);
   const [newName, setNewName] = useState("");
@@ -91,6 +91,7 @@ export default function Folder(props) {
     }
   }
 
+  useEffect(() => {});
   const { itemsCount, name, modifyMode, method } = props;
   return (
     <div data-name={name} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent'>

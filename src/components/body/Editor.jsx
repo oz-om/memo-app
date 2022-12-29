@@ -98,7 +98,7 @@ export default function CreateBlock() {
       const res = await req.data;
       if (res.isUpdate) {
         dispatch(updateNote(Note));
-        goBack();
+        cancel();
       }
     }
   }
@@ -108,7 +108,7 @@ export default function CreateBlock() {
   }, [noteModifyMode.editMode]);
 
   return (
-    <div className='hidden createBlock absolute top-0 w-full h-full bg-slate-100'>
+    <div className='createBlock absolute top-0 w-full h-full bg-slate-100 -right-[100vw] transition-right'>
       <div className='container'>
         <div className='noteControls flex justify-between items-center border-b border-b-gray-300 mb-2 px-3'>
           {noteModifyMode.editMode ? (

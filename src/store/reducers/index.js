@@ -1,5 +1,7 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
+
 //init user state
 export const isUser = createAsyncThunk("userReducer/isUser", async () => {
   const req = await axios.get("http://127.0.0.1:4011", {
@@ -13,7 +15,7 @@ export const isUser = createAsyncThunk("userReducer/isUser", async () => {
 const userSlice = createSlice({
   name: "userReducer",
   initialState: {
-    userState: null,
+    userState: false,
     user: null,
   },
   reducers: {
@@ -113,6 +115,18 @@ export const notesSlice = createSlice({
 export const { pushNote, removeNote, updateNote } = notesSlice.actions;
 export const notesReducer = notesSlice.reducer;
 
+export const virtualNotesSlice = createSlice({
+  name: "virtualNotes",
+  initialState: [],
+  reducers: {
+    setupNotes: function (state, action) {
+      return (state = action.payload);
+    },
+  },
+});
+export const { setupNotes } = virtualNotesSlice.actions;
+export const virtualNotes = virtualNotesSlice.reducer;
+
 // modify mode
 const modifyNoteSlice = createSlice({
   name: "modifyNote",
@@ -197,3 +211,16 @@ const activatedSlice = createSlice({
 
 export const { updateActivated } = activatedSlice.actions;
 export const activatedReducer = activatedSlice.reducer;
+
+// search mode
+const searchSlice = createSlice({
+  name: "search",
+  initialState: false,
+  reducers: {
+    switchSearchMode: function (state, action) {
+      return (state = action.payload);
+    },
+  },
+});
+export const { switchSearchMode } = searchSlice.actions;
+export const searchMode = searchSlice.reducer;

@@ -1,13 +1,11 @@
 import Note from "./note/Note";
 import Masonry from "react-responsive-masonry";
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setupNotes } from "../../store/reducers";
+import { getCreateBlock, useActivatedFolder } from "../../global";
 
 function EmptyBlock() {
-  function getCreateBlock() {
-    document.querySelector(".createBlock").classList.toggle("hidden");
-  }
-
   return (
     <div className='empty grid place-content-center'>
       <div className='w-72'>
@@ -31,33 +29,25 @@ function timestamp(atTime) {
 
 export default function Notes() {
   //@ts-ignore
-  const { notesReducer, activatedReducer } = useSelector((state) => state);
-  const [setupNotes, setNotes] = useState([]);
+  const { virtualNotes, notesReducer, activatedReducer } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    let initNotes;
-    if (activatedReducer == "All") {
-      initNotes = notesReducer.map((n) => {
-        const { id, title, note, folder, atTime, bgColor, color } = n;
-        return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
-      });
-    } else {
-      let activatedOnly = notesReducer.filter((active) => {
-        return active.folder == activatedReducer;
-      });
-      initNotes = activatedOnly.map((n) => {
-        const { id, title, note, folder, atTime, bgColor, color } = n;
-        return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
-      });
+    if (!virtualNotes.length) {
+      dispatch(setupNotes(notesReducer));
     }
-    setNotes(initNotes);
-  }, [activatedReducer, notesReducer]);
+    let filterNotes = useActivatedFolder(activatedReducer, dispatch, notesReducer);
+    filterNotes();
+  }, [notesReducer]);
 
   return (
     <div className='notes px-4 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
-      {setupNotes.length > 0 ? (
+      {virtualNotes.length > 0 ? (
         <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
-          {setupNotes}
+          {virtualNotes.map((n) => {
+            const { id, title, note, folder, atTime, bgColor, color } = n;
+            return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
+          })}
         </Masonry>
       ) : (
         <EmptyBlock />
@@ -65,15 +55,3 @@ export default function Notes() {
     </div>
   );
 }
-
-// let empty;
-// let initNotes;
-// if (notesReducer.length > 0) {
-//   initNotes = notesReducer.map((n) => {
-//     const { id, title, note, folder, atTime } = n;
-//     return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} />;
-//   });
-// } else {
-//   initNotes = "";
-//   empty = <EmptyBlock />;
-// }

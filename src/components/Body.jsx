@@ -18,7 +18,7 @@ export default function Body() {
   }, [userReducer.userState]);
   return (
     <main className='mainBody pt-5 overflow-hidden relative'>
-      <div className='container'>
+      <div className='container transition-left left-0 relative'>
         <SearchAndAdd />
         <Bar />
         <Notes />

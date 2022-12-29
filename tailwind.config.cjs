@@ -10,6 +10,11 @@ module.exports = {
         two: "minmax(100px, 1fr) minmax(auto, 52px)",
         twoCol: "minmax(100px, 1fr) minmax(auto, 82px)",
       },
+      transitionProperty: {
+        width: "width",
+        left: "left",
+        right: "right",
+      },
     },
     container: {
       center: true,

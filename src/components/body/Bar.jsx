@@ -2,13 +2,11 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateActivated } from "../../store/reducers";
 import BarFolder from "./folder/BarFolder";
+import { getFoldersBlock, useActivatedFolder } from "../../global";
 
-function getFoldersBlock() {
-  document.querySelector(".foldersBlock").classList.toggle("hidden");
-}
 export default function Bar() {
   //@ts-ignore
-  const { foldersReducer, activatedReducer } = useSelector((state) => state);
+  const { foldersReducer, activatedReducer, notesReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   function active_toggle(e) {
@@ -17,6 +15,10 @@ export default function Bar() {
       li.classList.remove("active");
     });
     e.target.classList.add("active");
+
+    let filterNotes = useActivatedFolder(e.target.textContent, dispatch, notesReducer);
+    filterNotes();
+
     dispatch(updateActivated(e.target.textContent));
   }
   function autoActiveFolder() {
@@ -35,6 +37,7 @@ export default function Bar() {
       }
     });
   }
+
   useEffect(() => {
     if (foldersReducer.length > 0) {
       autoActiveFolder();
@@ -52,7 +55,7 @@ export default function Bar() {
         <ul className='folders flex overflow-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>{folder_li}</ul>
       </ul>
       <span className='flex items-center' onClick={() => getFoldersBlock()}>
-        <i className='iconoir-folder rounded px-4 py-2 font-black text-orange-400 text-xl bg-orange-100/25 cursor-pointer'></i>
+        <i className='iconoir-folder rounded px-4 py-2 font-black text-orange-400 text-xl bg-orange-100/25 cursor-pointer -z-[1]'></i>
       </span>
     </div>
   );

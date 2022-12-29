@@ -1,27 +1,25 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeNote, switchNoteModifyMode } from "../../../store/reducers";
+import { removeNote, switchNoteModifyMode, switchSearchMode } from "../../../store/reducers";
+import { getCreateBlock, useToggleSearchUI } from "../../../global";
 
 function toggleOptions(target) {
-  target.nextElementSibling.classList.toggle("hidden");
-}
-function getCreateBlock() {
-  document.querySelector(".createBlock").classList.toggle("hidden");
-  let iframe = document.querySelector(".noteContent iframe");
-  //@ts-ignore
-  iframe.contentDocument.designMode = "on";
-  //@ts-ignore
-  iframe.contentDocument.body.style.margin = "0";
-  //@ts-ignore
-  iframe.contentDocument.body.style.padding = "8px";
-  //@ts-ignore
-  window.myEditor = iframe.contentDocument.body;
+  let options = document.querySelectorAll(".Note .options .noteControlsOptions");
+  options.forEach((list) => {
+    if (target.nextElementSibling == list) {
+      target.nextElementSibling.classList.toggle("w-0");
+      target.nextElementSibling.classList.toggle("w-20");
+    } else {
+      list.classList.add("w-0");
+      list.classList.remove("w-20");
+    }
+  });
 }
 
 export default function Note(props) {
   //@ts-ignore
-  const { notesReducer } = useSelector((state) => state);
+  const { notesReducer, activatedReducer, searchMode } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   async function deleteNote(ele) {
@@ -40,13 +38,19 @@ export default function Note(props) {
   }
 
   function editNote(edit) {
+    if (searchMode) {
+      dispatch(switchSearchMode(false));
+      let toggleSearchUI = useToggleSearchUI(false, activatedReducer, dispatch, notesReducer);
+      toggleSearchUI();
+    }
     getCreateBlock();
     const specificNote = notesReducer.filter((note) => {
       return note.id == edit.dataset.edit;
     });
     const { title, note, id, bgColor, color } = specificNote[0];
     dispatch(switchNoteModifyMode({ editMode: true, title, note, id, bgColor, color }));
-    edit.parentElement.classList.toggle("hidden");
+    edit.parentElement.classList.toggle("w-0");
+    edit.parentElement.classList.toggle("w-20");
   }
 
   const { id, title, note, atTime, folder, bgColor, color } = props;
@@ -65,7 +69,6 @@ export default function Note(props) {
       }}
     >
       <h4 className='font-bold'>{title}</h4>
-
       <div
         dangerouslySetInnerHTML={{ __html: note }}
         className='shortNote line-clamp-5 whitespace-pre-line'
@@ -84,12 +87,16 @@ export default function Note(props) {
         </span>
         <div className='options relative'>
           <i onClick={(e) => toggleOptions(e.target)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
-          <ul className='noteControlsOptions absolute right-0 backdrop-blur-md shadow-md rounded-md text-sm hidden'>
-            <li data-edit={id} onClick={(e) => editNote(e.currentTarget)} className='flex gap-x-1 items-center px-2 text-emerald-400 bg-emerald-50 cursor-pointer'>
+          <ul className='noteControlsOptions absolute -right-4 -top-16 overflow-hidden transition-width backdrop-blur-md shadow-md rounded-md text-sm w-0 '>
+            <li data-edit={id} onClick={(e) => editNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
               <i className='iconoir-edit'></i>
               <span>edit</span>
             </li>
-            <li data-delete={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2 text-red-400 bg-red-50 cursor-pointer'>
+            <li data-move={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
+              <i className='iconoir-share-ios'></i>
+              <span>move</span>
+            </li>
+            <li data-delete={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
               <i className='iconoir-trash'></i>
               <span>delete</span>
             </li>

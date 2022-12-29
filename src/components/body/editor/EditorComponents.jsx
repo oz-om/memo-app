@@ -1,3 +1,5 @@
+import { getCreateBlock } from "../../../global";
+
 function editor() {
   return document.querySelector(".createBlock .noteContent iframe");
 }
@@ -11,7 +13,7 @@ function validStyle() {
   }
 }
 function goBack() {
-  document.querySelector(".createBlock").classList.toggle("hidden");
+  getCreateBlock();
   setInputs("", "", "white", "");
 }
 function checkChanges(newChanges, defaultValue) {

@@ -14,8 +14,10 @@ export default function App() {
   const { userReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   useEffect(() => {
-    // @ts-ignore
-    dispatch(isUser());
+    if (!userReducer.userState) {
+      // @ts-ignore
+      dispatch(isUser());
+    }
     if (userReducer.userState) {
       //@ts-ignore
       dispatch(fetchFolders({ ownerId: userReducer.user.id }));
@@ -29,8 +31,10 @@ export default function App() {
       <Head />
       <Routes>
         <Route path='/' element={<Body />} />
+
         <Route path='/log-in' element={<Login />} />
         <Route path='/sign-in' element={<Signin />} />
+
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
       </Routes>
