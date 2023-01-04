@@ -1,10 +1,10 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
+const { VITE_API_KEY } = process.env;
 
 //init user state
 export const isUser = createAsyncThunk("userReducer/isUser", async () => {
-  const req = await axios.get("http://127.0.0.1:4011", {
+  const req = await axios.get(VITE_API_KEY, {
     withCredentials: true,
   });
   const res = await req.data;
@@ -47,7 +47,7 @@ export const logoutAction = createAsyncThunk("userReducer/registerAction", async
     },
     withCredentials: true,
   };
-  const req = await axios.post("http://127.0.0.1:4011/logout", options);
+  const req = await axios.post(`${VITE_API_KEY}/logout`, options);
   const res = await req.data;
   return res;
 });
@@ -82,7 +82,7 @@ export const registerReducer = registerSlice.reducer;
 
 // notes slice
 export const fetchNotes = createAsyncThunk("notes/fetchNotes", async (ownerId) => {
-  const req = await axios.post("http://127.0.0.1:4011/getNotes", ownerId, { withCredentials: true });
+  const req = await axios.post(`${VITE_API_KEY}/getNotes`, ownerId, { withCredentials: true });
   const notes = await req.data;
   return notes;
 });
@@ -155,7 +155,7 @@ export const noteModifyMode = modifyNoteSlice.reducer;
 
 // folders slice
 export const fetchFolders = createAsyncThunk("folders/fetchFolders", async (ownerId) => {
-  const req = await axios.post("http://127.0.0.1:4011/getFolders", ownerId, {
+  const req = await axios.post(`${VITE_API_KEY}/getFolders`, ownerId, {
     headers: {
       "Content-type": "application/json",
     },

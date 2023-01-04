@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { pushFolder, removeFolder, reNameFolder, switchModifyMode } from "../../../store/reducers";
-
+const { VITE_API_KEY } = process.env;
 export default function Folder(props) {
   //@ts-ignore
   const { userReducer } = useSelector((state) => state);
@@ -29,7 +29,7 @@ export default function Folder(props) {
       },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/addFolder", folder, options);
+    const req = await axios.post(`${VITE_API_KEY}/addFolder`, folder, options);
     const res = await req.data;
     if (res.isAdd) {
       dispatch(pushFolder(newFolder));
@@ -50,7 +50,7 @@ export default function Folder(props) {
       },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/deleteFolder", selectedFolder, options);
+    const req = await axios.post(`${VITE_API_KEY}/deleteFolder`, selectedFolder, options);
     const res = await req.data;
     if (res.isDeleted) {
       dispatch(removeFolder(folderName));
@@ -81,7 +81,7 @@ export default function Folder(props) {
       },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/renameFolder", update, options);
+    const req = await axios.post(`${VITE_API_KEY}/renameFolder`, update, options);
     const res = await req.data;
     if (res.isUpdate) {
       dispatch(reNameFolder({ oldName: name, newName }));

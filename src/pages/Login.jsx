@@ -5,6 +5,7 @@ import { Method, Line, Input, FormBtn } from "../components/form";
 import Footer from "../components/Footer";
 import { setEmail, setPassword, updateUserState } from "../store/reducers";
 import axios from "axios";
+const { VITE_API_KEY } = process.env;
 
 export default function Login() {
   // @ts-ignore
@@ -22,7 +23,7 @@ export default function Login() {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/login", loginReducer, options);
+    const req = await axios.post(`${VITE_API_KEY}/login`, loginReducer, options);
     const user = await req.data;
     if (user.login) {
       dispatch(updateUserState(user));

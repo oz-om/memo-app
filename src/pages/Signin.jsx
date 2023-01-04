@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setRegisterUsername, setRegisterEmail, setRegisterPassword } from "../store/reducers";
+const { VITE_API_KEY } = process.env;
 
 export default function Signin() {
   //@ts-ignore
@@ -25,7 +26,7 @@ export default function Signin() {
       },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/register", registerReducer, options);
+    const req = await axios.post(`${VITE_API_KEY}/register`, registerReducer, options);
     const res = await req.data;
     if (res.register) {
       navigate("/log-in");

@@ -3,6 +3,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeNote, switchNoteModifyMode, switchSearchMode } from "../../../store/reducers";
 import { getCreateBlock, useToggleSearchUI } from "../../../global";
+const { VITE_API_KEY } = process.env;
 
 function toggleOptions(target) {
   let options = document.querySelectorAll(".Note .options .noteControlsOptions");
@@ -30,7 +31,7 @@ export default function Note(props) {
       },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/deleteNote", { noteId }, options);
+    const req = await axios.post(`${VITE_API_KEY}/deleteNote`, { noteId }, options);
     const res = await req.data;
     if (res.deleted) {
       dispatch(removeNote(+noteId));

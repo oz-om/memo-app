@@ -20,6 +20,7 @@ import {
   getFolder,
   goBack,
 } from "./editor/EditorComponents";
+const { VITE_API_KEY } = process.env;
 
 export default function CreateBlock() {
   //@ts-ignore
@@ -53,7 +54,7 @@ export default function CreateBlock() {
       },
       withCredentials: true,
     };
-    const req = await axios.post("http://127.0.0.1:4011/addNote", Note, options);
+    const req = await axios.post(`${VITE_API_KEY}/addNote`, Note, options);
     const res = await req.data;
     if (res.isPush) {
       dispatch(pushNote({ id: res.noteId, ...Note }));
@@ -94,7 +95,7 @@ export default function CreateBlock() {
         },
         withCredentials: true,
       };
-      const req = await axios.post("http://127.0.0.1:4011/updateNote", Note, options);
+      const req = await axios.post(`${VITE_API_KEY}/updateNote`, Note, options);
       const res = await req.data;
       if (res.isUpdate) {
         dispatch(updateNote(Note));
