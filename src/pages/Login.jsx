@@ -101,7 +101,7 @@ export default function Login() {
         </div>
         <p className='px-5 my-2 text-center'>
           you don't have an account!{" "}
-          <Link className='text-blue-500' to='/sing-in'>
+          <Link className='text-blue-500' to='/sign-in'>
             create one?
           </Link>
         </p>
