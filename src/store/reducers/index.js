@@ -172,12 +172,15 @@ const foldersSlice = createSlice({
       state.push(action.payload);
     },
     removeFolder: function (state, action) {
-      const updated = state.filter((folder) => folder !== action.payload);
+      const updated = state.filter((folder) => folder.id !== action.payload);
       return (state = updated);
     },
     reNameFolder: function (state, action) {
-      const folder = state.indexOf(action.payload.oldName);
-      state[folder] = action.payload.newName;
+      state.forEach((folder) => {
+        if (folder.id == action.payload.id) {
+          folder.folder = action.payload.newName;
+        }
+      });
     },
   },
   extraReducers: (builder) => {
@@ -201,7 +204,7 @@ export const folderModifyMode = modifyFolderSlice.reducer;
 
 const activatedSlice = createSlice({
   name: "activated",
-  initialState: "All",
+  initialState: 0,
   reducers: {
     updateActivated: function (state, action) {
       return (state = action.payload);

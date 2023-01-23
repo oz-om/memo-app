@@ -24,7 +24,7 @@ const { VITE_API_KEY } = process.env;
 
 export default function CreateBlock() {
   //@ts-ignore
-  const { userReducer, noteModifyMode } = useSelector((state) => state);
+  const { userReducer, noteModifyMode, foldersReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [title, setTitleNote] = useState("");
   const [note, setNote] = useState("");
@@ -38,11 +38,21 @@ export default function CreateBlock() {
   }
   async function addNote() {
     let theme = getComputedStyle(document.querySelector(".title input"));
+    let folder;
+    if (!getFolder()) {
+      foldersReducer.forEach((f) => {
+        if (f.folder == "uncategorized") {
+          folder = f.id;
+        }
+      });
+    } else {
+      folder = getFolder();
+    }
     const Note = {
       ownerId: userReducer.user.id,
       title,
       note,
-      folder: getFolder(),
+      category_id: +folder,
       bgColor: theme.backgroundColor,
       color: theme.color,
       atTime: `${new Date().toLocaleDateString("en-CA")} ${new Date().toLocaleTimeString("ca")}`,

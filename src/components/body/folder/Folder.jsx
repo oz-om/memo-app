@@ -32,17 +32,21 @@ export default function Folder(props) {
     const req = await axios.post(`${VITE_API_KEY}/addFolder`, folder, options);
     const res = await req.data;
     if (res.isAdd) {
-      dispatch(pushFolder(newFolder));
+      dispatch(
+        pushFolder({
+          id: res.id,
+          folder: newFolder,
+        }),
+      );
       rest();
     } else {
       console.log(res.msg);
     }
   }
 
-  async function deleteFolder(folderName) {
+  async function deleteFolder(folderId) {
     const selectedFolder = {
-      folderName,
-      ownerId,
+      id: folderId,
     };
     const options = {
       headers: {
@@ -53,7 +57,7 @@ export default function Folder(props) {
     const req = await axios.post(`${VITE_API_KEY}/deleteFolder`, selectedFolder, options);
     const res = await req.data;
     if (res.isDeleted) {
-      dispatch(removeFolder(folderName));
+      dispatch(removeFolder(+folderId));
     } else {
       console.log(res.msg);
     }
@@ -69,11 +73,11 @@ export default function Folder(props) {
     document.getElementById(`folder_name_${name}`).textContent = name;
   }
 
-  async function saveNewName() {
+  async function saveNewName(target) {
     const update = {
       oldName: name,
+      id: target,
       newName,
-      ownerId,
     };
     const options = {
       headers: {
@@ -84,7 +88,7 @@ export default function Folder(props) {
     const req = await axios.post(`${VITE_API_KEY}/renameFolder`, update, options);
     const res = await req.data;
     if (res.isUpdate) {
-      dispatch(reNameFolder({ oldName: name, newName }));
+      dispatch(reNameFolder(update));
       setRenameState(false);
     } else {
       console.log(res.msg);
@@ -92,9 +96,9 @@ export default function Folder(props) {
   }
 
   useEffect(() => {});
-  const { itemsCount, name, modifyMode, method } = props;
+  const { itemsCount, name, folder_id, modifyMode, method } = props;
   return (
-    <div data-name={name} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent'>
+    <div data-name={name} data-id={folder_id} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent'>
       <div
         onClick={(e) => {
           !modifyMode && method(e.currentTarget);
@@ -153,22 +157,24 @@ export default function Folder(props) {
               <i className='iconoir-cancel mx-auto text-xl'></i>
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
-            <div onClick={() => saveNewName()} className='grid place-content-center text-emerald-400 cursor-pointer'>
+            <div id={folder_id} onClick={(e) => saveNewName(e.currentTarget.id)} className='grid place-content-center text-emerald-400 cursor-pointer'>
               <i className='iconoir-send mx-auto text-xl'></i>
               <span className='text-[10px] font-bold'>save</span>
             </div>
           </>
         ) : (
-          <>
-            <div id={name} onClick={(e) => deleteFolder(e.currentTarget.id)} className='grid place-content-center text-red-400'>
-              <i className='iconoir-trash mx-auto text-xl'></i>
-              <span className='text-[10px] font-bold'>delete</span>
-            </div>
-            <div onClick={() => renameFolder()} className='grid place-content-center text-emerald-400 cursor-pointer'>
-              <i className='iconoir-edit mx-auto text-xl'></i>
-              <span className='text-[10px] font-bold'>rename</span>
-            </div>
-          </>
+          name != "uncategorized" && (
+            <>
+              <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className='grid place-content-center text-red-400'>
+                <i className='iconoir-trash mx-auto text-xl'></i>
+                <span className='text-[10px] font-bold'>delete</span>
+              </div>
+              <div onClick={() => renameFolder()} className='grid place-content-center text-emerald-400 cursor-pointer'>
+                <i className='iconoir-edit mx-auto text-xl'></i>
+                <span className='text-[10px] font-bold'>rename</span>
+              </div>
+            </>
+          )
         )}
       </div>
     </div>

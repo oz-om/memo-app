@@ -34,11 +34,11 @@ export function getFoldersBlock() {
 // filtering note and setup virtual notes
 export function useActivatedFolder(currentFolder, dispatch, notesReducer) {
   function filterNotes() {
-    if (currentFolder == "All") {
+    if (currentFolder == 0) {
       dispatch(setupNotes(notesReducer));
     } else {
       let activatedOnly = notesReducer.filter((active) => {
-        return active.folder == currentFolder;
+        return active.category_id == currentFolder;
       });
       dispatch(setupNotes(activatedOnly));
     }

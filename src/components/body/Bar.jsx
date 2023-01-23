@@ -16,13 +16,13 @@ export default function Bar() {
     });
     e.target.classList.add("active");
 
-    let filterNotes = useActivatedFolder(e.target.textContent, dispatch, notesReducer);
+    let filterNotes = useActivatedFolder(e.target.dataset.id, dispatch, notesReducer);
     filterNotes();
 
-    dispatch(updateActivated(e.target.textContent));
+    dispatch(updateActivated(e.target.dataset.id));
   }
   function autoActiveFolder() {
-    if (activatedReducer == "All") {
+    if (activatedReducer == 0) {
       document.querySelector(".bar .all").classList.add("active");
     } else {
       document.querySelector(".bar .all").classList.remove("active");
@@ -30,7 +30,7 @@ export default function Bar() {
     let allFolders = Array.from(document.querySelectorAll(".bar .folders li"));
     allFolders.forEach((li) => {
       //@ts-ignore
-      if (li.dataset.name == activatedReducer) {
+      if (li.dataset.id == activatedReducer) {
         li.classList.add("active");
       } else {
         li.classList.remove("active");
@@ -44,12 +44,12 @@ export default function Bar() {
     }
   }, [activatedReducer]);
 
-  let folder_li = foldersReducer.map((folder) => <BarFolder key={folder} name={folder} click={active_toggle} />);
+  let folder_li = foldersReducer.map((folder) => <BarFolder key={folder.id} id={folder.id} name={folder.folder} click={active_toggle} />);
 
   return (
     <div className='bar p-1 my-3 grid grid-cols-two shadow'>
       <ul className='flex gap-x-2'>
-        <li className='all rounded px-4 py-2 cursor-pointer border border-transparent active' onClick={active_toggle}>
+        <li className='all rounded px-4 py-2 cursor-pointer border border-transparent active' data-id={0} onClick={active_toggle}>
           All
         </li>
         <ul className='folders flex overflow-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>{folder_li}</ul>

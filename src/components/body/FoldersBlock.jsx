@@ -10,21 +10,26 @@ export default function FoldersBlock() {
   const dispatch = useDispatch();
   function activeFolder(item) {
     let folder = item.parentElement;
+
     const AllFolders = document.querySelectorAll(".foldersContainer .folder");
+
     AllFolders.forEach((folder) => {
       folder.classList.remove("activatedFolder");
     });
+
     folder.classList.add("activatedFolder");
-    dispatch(updateActivated(folder.dataset.name));
+
+    dispatch(updateActivated(folder.dataset.id));
     getFoldersBlock();
-    let filterNotes = useActivatedFolder(folder.dataset.name, dispatch, notesReducer);
+
+    let filterNotes = useActivatedFolder(folder.dataset.id, dispatch, notesReducer);
     filterNotes();
   }
   function autoActiveFolder() {
     let allFolders = Array.from(document.querySelectorAll(".foldersContainer .folder"));
     allFolders.forEach((folder) => {
       //@ts-ignore
-      if (folder.dataset.name == activatedReducer) {
+      if (folder.dataset.id == activatedReducer) {
         folder.classList.add("activatedFolder");
       } else {
         folder.classList.remove("activatedFolder");
@@ -39,10 +44,11 @@ export default function FoldersBlock() {
 
   const initFolders = foldersReducer.map((folder) => {
     let itemsCount = notesReducer.filter((note) => {
-      return note.folder == folder;
+      return note.category_id == folder.id;
     });
-    return <Folder key={folder} name={folder} itemsCount={itemsCount.length} modifyMode={false} method={activeFolder} />;
+    return <Folder key={folder.id} folder_id={folder.id} name={folder.folder} itemsCount={itemsCount.length} modifyMode={false} method={activeFolder} />;
   });
+
   return (
     <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right -right-[100vw]'>
       <div className='bar py-1 mb-2 shadow-md relative'>
@@ -52,7 +58,7 @@ export default function FoldersBlock() {
         <h2 className='basis-10/12 text-center font-bold absolute  w-40 translate-x-[50%] right-[50%] top-0'>folders</h2>
       </div>
       <div style={{ height: "calc(100vh - 163px)" }} className='foldersContainer overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
-        <div data-name='All' className='folder  bg-gray-100 border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent activatedFolder'>
+        <div data-name='All' data-id={0} className='folder  bg-gray-100 border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent activatedFolder'>
           <div
             onClick={(e) => {
               activeFolder(e.currentTarget);

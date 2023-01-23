@@ -52,10 +52,10 @@ function getFolder() {
     return f.classList.contains("active");
   });
   if (folder.length > 0) {
-    return folder[0].textContent;
-  } else {
-    return "all";
+    //@ts-ignore
+    return folder[0].dataset.id;
   }
+  return null;
 }
 function toggleThemes(icon) {
   document.querySelectorAll(".theme .themeList").forEach((list) => {
