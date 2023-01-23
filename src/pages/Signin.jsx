@@ -36,7 +36,7 @@ export default function Signin() {
   }
 
   return (
-    <main className='pt-20 h-[calc(100vh_-_52px)] overflow-auto'>
+    <main className='pt-20 h-[calc(100vh_-_52px)] overflow-auto customScroll'>
       <div className='container'>
         <div className='partOne grid place-content-center'>
           <h2 className='text-3xl font-black'>Register For Free</h2>

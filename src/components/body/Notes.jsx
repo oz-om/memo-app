@@ -41,7 +41,7 @@ export default function Notes() {
   }, [notesReducer]);
 
   return (
-    <div className='notes px-4 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
+    <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll'>
       {virtualNotes.length > 0 ? (
         <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
           {virtualNotes.map((n) => {

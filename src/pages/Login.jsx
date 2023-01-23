@@ -36,7 +36,7 @@ export default function Login() {
   const boxTitleStyle = "absolute tracking-[-1px] bg-white p-2 -top-6 left-1 border-blue-300 border rounded-xl text-sm text-gray-700";
 
   return (
-    <main className='h-[calc(100vh_-_52px)] overflow-auto'>
+    <main className='h-[calc(100vh_-_52px)] overflow-auto customScroll'>
       <div className='container'>
         <h2 className='text-center text-2xl font-bold px-5 mt-14 mb-8'>Get the best Memorisation experience, for free!</h2>
         <div className={boxStyle}>

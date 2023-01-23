@@ -8,11 +8,17 @@
 }
 
 @layer base {
+  html {
+    @apply overflow-hidden;
+  }
   body {
     @apply font-mono;
   }
   img {
     @apply w-full h-full object-cover;
+  }
+  .customScroll {
+    @apply scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm;
   }
   .mainBody {
     height: calc(100vh - 52px);
