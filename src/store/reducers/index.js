@@ -6,9 +6,6 @@ const { VITE_API_KEY } = process.env;
 export const isUser = createAsyncThunk("userReducer/isUser", async () => {
   const req = await axios.get(VITE_API_KEY, {
     withCredentials: true,
-    headers: {
-      origin: location.origin,
-    },
   });
   const res = await req.data;
   return res;
@@ -47,7 +44,6 @@ export const logoutAction = createAsyncThunk("userReducer/registerAction", async
   const options = {
     headers: {
       "Content-type": "application/json",
-      origin: location.origin,
     },
     withCredentials: true,
   };
@@ -89,7 +85,6 @@ export const fetchNotes = createAsyncThunk("notes/fetchNotes", async (ownerId) =
   const req = await axios.post(`${VITE_API_KEY}/getNotes`, ownerId, {
     headers: {
       "Content-type": "application/json",
-      origin: location.origin,
     },
     withCredentials: true,
   });
@@ -168,7 +163,6 @@ export const fetchFolders = createAsyncThunk("folders/fetchFolders", async (owne
   const req = await axios.post(`${VITE_API_KEY}/getFolders`, ownerId, {
     headers: {
       "Content-type": "application/json",
-      origin: location.origin,
     },
     withCredentials: true,
   });
