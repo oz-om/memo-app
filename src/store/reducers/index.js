@@ -82,7 +82,12 @@ export const registerReducer = registerSlice.reducer;
 
 // notes slice
 export const fetchNotes = createAsyncThunk("notes/fetchNotes", async (ownerId) => {
-  const req = await axios.post(`${VITE_API_KEY}/getNotes`, ownerId, { withCredentials: true });
+  const req = await axios.post(`${VITE_API_KEY}/getNotes`, ownerId, {
+    headers: {
+      "Content-type": "application/json",
+    },
+    withCredentials: true,
+  });
   const notes = await req.data;
   return notes;
 });
