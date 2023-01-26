@@ -36,13 +36,13 @@ export default function Login() {
     const user = await req.data;
 
     if (user.login) {
-      cookie.set("j_own", user.j_own, {
-        sameSite: "none",
-        secure: true,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24,
-        domain: VITE_API_KEY,
-      });
+      // cookie.set("j_own", user.j_own, {
+      //   sameSite: "none",
+      //   secure: true,
+      //   httpOnly: true,
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   domain: VITE_API_KEY,
+      // });
       dispatch(updateUserState(user));
     } else {
       setUserState(user);
