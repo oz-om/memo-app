@@ -18,7 +18,7 @@ specifiers:
   react-router-dom: ^6.4.3
   tailwind-scrollbar: ^2.0.1
   tailwindcss: ^3.2.4
-  universal-cookie: ^4.0.4
+  universal-cookie: 4.0.3
   vite: ^3.2.3
 
 dependencies:
@@ -30,7 +30,7 @@ dependencies:
   react-redux: 8.0.5_ie75ejlwqy5zh3tldgt7pftwcu
   react-responsive-masonry: 2.1.7
   react-router-dom: 6.6.1_biqbaboplfbrettd7655fr4n2y
-  universal-cookie: 4.0.4
+  universal-cookie: 4.0.3
 
 devDependencies:
   '@tailwindcss/line-clamp': 0.4.2_tailwindcss@3.2.4
@@ -439,6 +439,10 @@ packages:
     dependencies:
       '@types/react': 18.0.26
       hoist-non-react-statics: 3.3.2
+    dev: false
+
+  /@types/object-assign/4.0.30:
+    resolution: {integrity: sha512-HhE8gFfLj321pa6OE59QmOdL5NgIOhkdYn7MWnZTOcHOms8XFzNgr9+A0/GbN0XEX9wTM58yg4YXKhGr69QIUw==}
     dev: false
 
   /@types/prop-types/15.7.5:
@@ -1499,11 +1503,13 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /universal-cookie/4.0.4:
-    resolution: {integrity: sha512-lbRVHoOMtItjWbM7TwDLdl8wug7izB0tq3/YVKhT/ahB4VDvWMyvnADfnJI8y6fSvsjh51Ix7lTGC6Tn4rMPhw==}
+  /universal-cookie/4.0.3:
+    resolution: {integrity: sha512-YbEHRs7bYOBTIWedTR9koVEe2mXrq+xdjTJZcoKJK/pQaE6ni28ak2AKXFpevb+X6w3iU5SXzWDiJkmpDRb9qw==}
     dependencies:
       '@types/cookie': 0.3.3
+      '@types/object-assign': 4.0.30
       cookie: 0.4.2
+      object-assign: 4.1.1
     dev: false
 
   /update-browserslist-db/1.0.10_browserslist@4.21.4:
