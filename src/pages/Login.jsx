@@ -11,10 +11,17 @@ const { VITE_API_KEY } = process.env;
 
 export default function Login() {
   // @ts-ignore
-  const { userReducer, loginReducer } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
   const [userState, setUserState] = useState({ login: true });
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  function handelInput(target) {
+    setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
+  }
   useEffect(() => {
     if (userReducer.userState) {
       navigate("/");
@@ -25,7 +32,7 @@ export default function Login() {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     };
-    const req = await axios.post(`${VITE_API_KEY}/login`, loginReducer, options);
+    const req = await axios.post(`${VITE_API_KEY}/login`, inputs, options);
     const user = await req.data;
 
     if (user.login) {
@@ -80,19 +87,21 @@ export default function Login() {
             }}
           >
             <Input
-              type='text'
               fieldName='user/email'
+              type='text'
               placeholder='userId or email'
+              name='email'
               method={(e) => {
-                dispatch(setEmail(e.target.value));
+                handelInput(e.target);
               }}
             />
             <Input
-              type='password'
               fieldName='password'
+              type='password'
               placeholder='password'
+              name='password'
               method={(e) => {
-                dispatch(setPassword(e.target.value));
+                handelInput(e.target);
               }}
             />
             <div className='flex justify-between'>

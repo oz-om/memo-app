@@ -21,6 +21,7 @@ const userSlice = createSlice({
   reducers: {
     updateUserState: function (state, action) {
       state.userState = action.payload.login;
+      state.user = action.payload.user;
     },
   },
   extraReducers: (builder) => {
