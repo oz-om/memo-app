@@ -39,6 +39,7 @@ export default function Login() {
       cookie.set("j_own", user.j_own, {
         sameSite: "none",
         secure: true,
+        httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24,
       });
       dispatch(updateUserState(user));
