@@ -24,7 +24,7 @@ const { VITE_API_KEY } = process.env;
 
 export default function CreateBlock() {
   //@ts-ignore
-  const { userReducer, noteModifyMode, foldersReducer } = useSelector((state) => state);
+  const { noteModifyMode, foldersReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [title, setTitleNote] = useState("");
   const [note, setNote] = useState("");
@@ -49,7 +49,6 @@ export default function CreateBlock() {
       folder = getFolder();
     }
     const Note = {
-      ownerId: userReducer.user.id,
       title,
       note,
       category_id: +folder,
@@ -93,7 +92,6 @@ export default function CreateBlock() {
     let theme = getComputedStyle(document.querySelector(".title input"));
     if (checkChanges(title, noteModifyMode.title).isChanged || checkChanges(note, noteModifyMode.note).isChanged) {
       const Note = {
-        id: noteModifyMode.id,
         newTitle: checkChanges(title, noteModifyMode.title).inputValue,
         newNote: checkChanges(note, noteModifyMode.note).inputValue,
         bgColor: theme.backgroundColor,

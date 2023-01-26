@@ -20,9 +20,9 @@ export default function App() {
     }
     if (userReducer.userState) {
       //@ts-ignore
-      dispatch(fetchFolders({ ownerId: userReducer.user.id }));
+      dispatch(fetchFolders());
       //@ts-ignore
-      dispatch(fetchNotes({ ownerId: userReducer.user.id }));
+      dispatch(fetchNotes());
     }
   }, [userReducer.userState]);
 

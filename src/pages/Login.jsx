@@ -5,6 +5,8 @@ import { Method, Line, Input, FormBtn } from "../components/form";
 import Footer from "../components/Footer";
 import { setEmail, setPassword, updateUserState } from "../store/reducers";
 import axios from "axios";
+import Cookie from "universal-cookie";
+const cookie = new Cookie();
 const { VITE_API_KEY } = process.env;
 
 export default function Login() {
@@ -27,11 +29,11 @@ export default function Login() {
     const user = await req.data;
 
     if (user.login) {
-      // cookie.set("j_own", user.j_own, {
-      //   sameSite: "none",
-      //   secure: true,
-      //   maxAge: 1000 * 60 * 60 * 24,
-      // });
+      cookie.set("j_own", user.j_own, {
+        sameSite: "none",
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24,
+      });
       dispatch(updateUserState(user));
     } else {
       setUserState(user);

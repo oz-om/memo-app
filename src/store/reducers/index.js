@@ -21,7 +21,6 @@ const userSlice = createSlice({
   reducers: {
     updateUserState: function (state, action) {
       state.userState = action.payload.login;
-      state.user = action.payload.user;
     },
   },
   extraReducers: (builder) => {
@@ -81,8 +80,8 @@ export const { setRegisterUsername, setRegisterEmail, setRegisterPassword } = re
 export const registerReducer = registerSlice.reducer;
 
 // notes slice
-export const fetchNotes = createAsyncThunk("notes/fetchNotes", async (ownerId) => {
-  const req = await axios.post(`${VITE_API_KEY}/getNotes`, ownerId, {
+export const fetchNotes = createAsyncThunk("notes/fetchNotes", async () => {
+  const req = await axios.get(`${VITE_API_KEY}/getNotes`, {
     headers: {
       "Content-type": "application/json",
     },
