@@ -36,12 +36,12 @@ export default function Login() {
     const user = await req.data;
 
     if (user.login) {
-      cookie.set("j_own", user.j_own, {
-        sameSite: "none",
-        secure: true,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24,
-      });
+      // cookie.set("j_own", user.j_own, {
+      //   sameSite: "none",
+      //   secure: true,
+      //   httpOnly: true,
+      //   maxAge: 1000 * 60 * 60 * 24,
+      // });
       dispatch(updateUserState(user));
     } else {
       setUserState(user);
