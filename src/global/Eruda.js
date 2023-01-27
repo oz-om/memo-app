@@ -1,6 +1,5 @@
 import eruda from "eruda";
 const mode = process.env.VITE_MODE;
-
 if (mode == "development") {
   eruda.init({
     tool: ["console", "elements", "snippets", "network", "resources", "sources"],
