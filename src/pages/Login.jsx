@@ -101,8 +101,8 @@ export default function Login() {
             />
             <div className='flex justify-between'>
               <div className='flex my-4'>
-                <input type='checkBox' id='remomberMe' className='block mr-2' />
-                <label htmlFor='remomberMe'>remomber me!</label>
+                <input type='checkBox' id='rememberMe' className='block mr-2' />
+                <label htmlFor='rememberMe'>remember me!</label>
               </div>
               <Link className='text-blue-500 flex items-center' to='rest-pass'>
                 forget password?
