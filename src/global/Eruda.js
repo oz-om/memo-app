@@ -1,4 +1,3 @@
-//console
 import eruda from "eruda";
 const mode = process.env.VITE_MODE;
 
