@@ -41,11 +41,11 @@ export default function Note(props) {
   function editNote(edit) {
     if (searchMode) {
       dispatch(switchSearchMode(false));
-      let toggleSearchUI = useToggleSearchUI(false, activatedReducer, dispatch, notesReducer);
+      let toggleSearchUI = useToggleSearchUI(false, activatedReducer, dispatch, notesReducer.notes);
       toggleSearchUI();
     }
     getCreateBlock();
-    const specificNote = notesReducer.filter((note) => {
+    const specificNote = notesReducer.notes.filter((note) => {
       return note.id == edit.dataset.edit;
     });
     const { title, note, id, bgColor, color } = specificNote[0];

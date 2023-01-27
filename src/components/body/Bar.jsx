@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateActivated } from "../../store/reducers";
 import BarFolder from "./folder/BarFolder";
+import { LoadFolders } from "../Loading";
 import { getFoldersBlock, useActivatedFolder } from "../../global";
+import { Error } from "../Error";
 
 export default function Bar() {
   //@ts-ignore
@@ -16,7 +18,7 @@ export default function Bar() {
     });
     e.target.classList.add("active");
 
-    let filterNotes = useActivatedFolder(e.target.dataset.id, dispatch, notesReducer);
+    let filterNotes = useActivatedFolder(e.target.dataset.id, dispatch, notesReducer.notes);
     filterNotes();
 
     dispatch(updateActivated(e.target.dataset.id));
@@ -39,12 +41,10 @@ export default function Bar() {
   }
 
   useEffect(() => {
-    if (foldersReducer.length > 0) {
+    if (foldersReducer.folders.length > 0) {
       autoActiveFolder();
     }
   }, [activatedReducer]);
-
-  let folder_li = foldersReducer.map((folder) => <BarFolder key={folder.id} id={folder.id} name={folder.folder} click={active_toggle} />);
 
   return (
     <div className='bar p-1 my-3 grid grid-cols-two shadow'>
@@ -52,7 +52,18 @@ export default function Bar() {
         <li className='all rounded px-4 py-2 cursor-pointer border border-transparent active' data-id={0} onClick={active_toggle}>
           All
         </li>
-        <ul className='folders flex overflow-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>{folder_li}</ul>
+        <ul className='folders flex overflow-auto customScroll'>
+          {foldersReducer.loading ? (
+            <>
+              <LoadFolders />
+              <LoadFolders />
+              <LoadFolders />
+            </>
+          ) : (
+            foldersReducer.folders.length > 0 && foldersReducer.folders.map((folder) => <BarFolder key={folder.id} id={folder.id} name={folder.folder} click={active_toggle} />)
+          )}
+          {foldersReducer.errMsg.length > 0 && <Error msg={foldersReducer.errMsg.split(",")[0]} />}
+        </ul>
       </ul>
       <span className='flex items-center' onClick={() => getFoldersBlock()}>
         <i className='iconoir-folder rounded px-4 py-2 font-black text-orange-400 text-xl bg-orange-100/25 cursor-pointer -z-[1]'></i>

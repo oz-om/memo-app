@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setupNotes } from "../../store/reducers";
 import { getCreateBlock, useActivatedFolder } from "../../global";
+import { LoadNotes } from "../Loading";
+import { Error } from "../Error";
 
 function EmptyBlock() {
   return (
@@ -34,15 +36,26 @@ export default function Notes() {
 
   useEffect(() => {
     if (!virtualNotes.length) {
-      dispatch(setupNotes(notesReducer));
+      dispatch(setupNotes(notesReducer.notes));
     }
-    let filterNotes = useActivatedFolder(activatedReducer, dispatch, notesReducer);
+    let filterNotes = useActivatedFolder(activatedReducer, dispatch, notesReducer.notes);
     filterNotes();
-  }, [notesReducer]);
+  }, [notesReducer.notes]);
 
   return (
-    <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll'>
-      {virtualNotes.length > 0 ? (
+    <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll  h-'>
+      {notesReducer.loading ? (
+        <>
+          <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
+            <LoadNotes height={"h-48"} />
+            <LoadNotes height={"h-[136px]"} />
+            <LoadNotes height={"h-[136px]"} />
+            <LoadNotes height={"h-48"} />
+            <LoadNotes height={"h-48"} />
+            <LoadNotes height={"h-[136px]"} />
+          </Masonry>
+        </>
+      ) : virtualNotes.length > 0 ? (
         <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
           {virtualNotes.map((n) => {
             const { id, title, note, folder, atTime, bgColor, color } = n;
@@ -52,6 +65,7 @@ export default function Notes() {
       ) : (
         <EmptyBlock />
       )}
+      {notesReducer.errMsg.length > 0 && <Error msg={notesReducer.errMsg} />}
     </div>
   );
 }

@@ -40,7 +40,7 @@ export default function CreateBlock() {
     let theme = getComputedStyle(document.querySelector(".title input"));
     let folder;
     if (!getFolder()) {
-      foldersReducer.forEach((f) => {
+      foldersReducer.folders.forEach((f) => {
         if (f.folder == "uncategorized") {
           folder = f.id;
         }

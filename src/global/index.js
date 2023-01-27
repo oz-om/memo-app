@@ -32,12 +32,12 @@ export function getFoldersBlock() {
 }
 
 // filtering note and setup virtual notes
-export function useActivatedFolder(currentFolder, dispatch, notesReducer) {
+export function useActivatedFolder(currentFolder, dispatch, notes) {
   function filterNotes() {
     if (currentFolder == 0) {
-      dispatch(setupNotes(notesReducer));
+      dispatch(setupNotes(notes));
     } else {
-      let activatedOnly = notesReducer.filter((active) => {
+      let activatedOnly = notes.filter((active) => {
         return active.category_id == currentFolder;
       });
       dispatch(setupNotes(activatedOnly));
@@ -59,7 +59,7 @@ export function resetFocus(reset) {
     document.querySelector(".mainBody .notes").classList.add("relative", "top-4");
   }
 }
-export function useToggleSearchUI(searchMode, activatedReducer, dispatch, notesReducer) {
+export function useToggleSearchUI(searchMode, activatedReducer, dispatch, notes) {
   function toggleUI() {
     if (searchMode) {
       document.querySelector(".search").classList.add("z-[1]");
@@ -72,7 +72,7 @@ export function useToggleSearchUI(searchMode, activatedReducer, dispatch, notesR
       resetFocus(true);
       //@ts-ignore
       document.querySelector(".search input").value = "";
-      let filterNotes = useActivatedFolder(activatedReducer, dispatch, notesReducer);
+      let filterNotes = useActivatedFolder(activatedReducer, dispatch, notes);
       filterNotes();
     }
   }

@@ -11,12 +11,26 @@ export const isUser = createAsyncThunk("userReducer/isUser", async () => {
   return res;
 });
 
+//authentication slice
+export const logoutAction = createAsyncThunk("userReducer/logout", async () => {
+  const options = {
+    headers: {
+      "Content-type": "application/json",
+    },
+    withCredentials: true,
+  };
+  const req = await axios.post(`${VITE_API_KEY}/logout`, options);
+  const res = await req.data;
+  return res;
+});
+
 // user slice
 const userSlice = createSlice({
   name: "userReducer",
   initialState: {
     userState: false,
     user: null,
+    loading: true,
   },
   reducers: {
     updateUserState: function (state, action) {
@@ -30,55 +44,16 @@ const userSlice = createSlice({
       if (action.payload.login) {
         state.user = action.payload.user;
       }
+      state.loading = false;
     });
     builder.addCase(logoutAction.fulfilled, function (state, action) {
-      return (state.userState = action.payload);
+      state.userState = action.payload;
+      state.loading = false;
     });
   },
 });
 export const { updateUserState } = userSlice.actions;
 export const userReducer = userSlice.reducer;
-
-//authentication slice
-export const logoutAction = createAsyncThunk("userReducer/registerAction", async () => {
-  const options = {
-    headers: {
-      "Content-type": "application/json",
-    },
-    withCredentials: true,
-  };
-  const req = await axios.post(`${VITE_API_KEY}/logout`, options);
-  const res = await req.data;
-  return res;
-});
-const loginSlice = createSlice({
-  name: "login",
-  initialState: {
-    email: "",
-    password: "",
-  },
-  reducers: {
-    setEmail: (state, action) => void (state.email = action.payload),
-    setPassword: (state, action) => void (state.password = action.payload),
-  },
-});
-export const { setEmail, setPassword } = loginSlice.actions;
-export const loginReducer = loginSlice.reducer;
-const registerSlice = createSlice({
-  name: "register",
-  initialState: {
-    username: "",
-    email: "",
-    password: "",
-  },
-  reducers: {
-    setRegisterUsername: (state, action) => void (state.username = action.payload),
-    setRegisterEmail: (state, action) => void (state.email = action.payload),
-    setRegisterPassword: (state, action) => void (state.password = action.payload),
-  },
-});
-export const { setRegisterUsername, setRegisterEmail, setRegisterPassword } = registerSlice.actions;
-export const registerReducer = registerSlice.reducer;
 
 // notes slice
 export const fetchNotes = createAsyncThunk("notes/fetchNotes", async () => {
@@ -93,28 +68,39 @@ export const fetchNotes = createAsyncThunk("notes/fetchNotes", async () => {
 });
 export const notesSlice = createSlice({
   name: "notes",
-  initialState: [],
+  initialState: {
+    loading: true,
+    errMsg: "",
+    notes: [],
+  },
   reducers: {
     pushNote: function (state, action) {
-      state.push(action.payload);
+      state.notes.push(action.payload);
     },
     updateNote: function (state, action) {
-      const specificNote = state.find((note) => {
+      const specificNote = state.notes.find((note) => {
         return note.id == action.payload.id;
       });
       specificNote.title = action.payload.newTitle;
       specificNote.note = action.payload.newNote;
       specificNote.bgColor = action.payload.bgColor;
       specificNote.color = action.payload.color;
-      return state;
+      // return state;
     },
     removeNote: function (state, action) {
-      const updated = state.filter((note) => note.id !== action.payload);
-      return (state = updated);
+      const updated = state.notes.filter((note) => note.id !== action.payload);
+      state.notes = updated;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchNotes.fulfilled, (state, action) => (state = action.payload));
+    builder.addCase(fetchNotes.fulfilled, function (state, action) {
+      if (action.payload.state) {
+        state.notes = action.payload.notes;
+      } else {
+        state.errMsg = action.payload.msg;
+      }
+      state.loading = false;
+    });
   },
 });
 export const { pushNote, removeNote, updateNote } = notesSlice.actions;
@@ -171,17 +157,21 @@ export const fetchFolders = createAsyncThunk("folders/fetchFolders", async (owne
 });
 const foldersSlice = createSlice({
   name: "folders",
-  initialState: [],
+  initialState: {
+    loading: true,
+    errMsg: "",
+    folders: [],
+  },
   reducers: {
     pushFolder: function (state, action) {
-      state.push(action.payload);
+      state.folders.push(action.payload);
     },
     removeFolder: function (state, action) {
-      const updated = state.filter((folder) => folder.id !== action.payload);
-      return (state = updated);
+      const updated = state.folders.filter((folder) => folder.id !== action.payload);
+      state.folders = updated;
     },
     reNameFolder: function (state, action) {
-      state.forEach((folder) => {
+      state.folders.forEach((folder) => {
         if (folder.id == action.payload.id) {
           folder.folder = action.payload.newName;
         }
@@ -189,7 +179,14 @@ const foldersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchFolders.fulfilled, (state, action) => (state = action.payload.folders));
+    builder.addCase(fetchFolders.fulfilled, (state, action) => {
+      if (action.payload.state) {
+        state.folders = action.payload.folders;
+      } else {
+        state.errMsg = action.payload.msg;
+      }
+      state.loading = false;
+    });
   },
 });
 export const { pushFolder, removeFolder, reNameFolder } = foldersSlice.actions;

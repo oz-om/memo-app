@@ -22,7 +22,7 @@ export default function FoldersBlock() {
     dispatch(updateActivated(folder.dataset.id));
     getFoldersBlock();
 
-    let filterNotes = useActivatedFolder(folder.dataset.id, dispatch, notesReducer);
+    let filterNotes = useActivatedFolder(folder.dataset.id, dispatch, notesReducer.notes);
     filterNotes();
   }
   function autoActiveFolder() {
@@ -37,13 +37,13 @@ export default function FoldersBlock() {
     });
   }
   useEffect(() => {
-    if (foldersReducer.length > 0) {
+    if (foldersReducer.folders.length > 0) {
       autoActiveFolder();
     }
   }, [activatedReducer]);
 
-  const initFolders = foldersReducer.map((folder) => {
-    let itemsCount = notesReducer.filter((note) => {
+  const initFolders = foldersReducer.folders.map((folder) => {
+    let itemsCount = notesReducer.notes.filter((note) => {
       return note.category_id == folder.id;
     });
     return <Folder key={folder.id} folder_id={folder.id} name={folder.folder} itemsCount={itemsCount.length} modifyMode={false} method={activeFolder} />;
@@ -65,7 +65,7 @@ export default function FoldersBlock() {
             }}
             className='info flex items-center gap-x-1 px-2 py-2'
           >
-            <span className='text-[12px]'>{notesReducer.length}</span>
+            <span className='text-[12px]'>{notesReducer.notes.length}</span>
             <h2 className='text-lg font-black px-2'>All</h2>
           </div>
         </div>

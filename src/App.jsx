@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import Loading from "./components/Loading";
 import Head from "./components/Head";
 import Body from "./components/Body";
 import Login from "./pages/Login";
@@ -20,24 +21,30 @@ export default function App() {
     }
     if (userReducer.userState) {
       //@ts-ignore
-      dispatch(fetchFolders());
-      //@ts-ignore
       dispatch(fetchNotes());
+      //@ts-ignore
+      dispatch(fetchFolders());
     }
   }, [userReducer.userState]);
 
   return (
     <>
-      <Head />
-      <Routes>
-        <Route path='/' element={<Body />} />
+      {userReducer.loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Head />
+          <Routes>
+            <Route path='/' element={<Body />} />
 
-        <Route path='/log-in' element={<Login />} />
-        <Route path='/sign-in' element={<Signin />} />
+            <Route path='/log-in' element={<Login />} />
+            <Route path='/sign-in' element={<Signin />} />
 
-        <Route path='/about' element={<About />} />
-        <Route path='/contact' element={<Contact />} />
-      </Routes>
+            <Route path='/about' element={<About />} />
+            <Route path='/contact' element={<Contact />} />
+          </Routes>
+        </>
+      )}
     </>
   );
 }

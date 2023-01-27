@@ -18,7 +18,6 @@ specifiers:
   react-router-dom: ^6.4.3
   tailwind-scrollbar: ^2.0.1
   tailwindcss: ^3.2.4
-  universal-cookie: ^4.0.4
   vite: ^3.2.3
 
 dependencies:
@@ -30,7 +29,6 @@ dependencies:
   react-redux: 8.0.5_ie75ejlwqy5zh3tldgt7pftwcu
   react-responsive-masonry: 2.1.7
   react-router-dom: 6.6.1_biqbaboplfbrettd7655fr4n2y
-  universal-cookie: 4.0.4
 
 devDependencies:
   '@tailwindcss/line-clamp': 0.4.2_tailwindcss@3.2.4
@@ -430,10 +428,6 @@ packages:
       tailwindcss: 3.2.4_postcss@8.4.20
     dev: true
 
-  /@types/cookie/0.3.3:
-    resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
-    dev: false
-
   /@types/hoist-non-react-statics/3.3.1:
     resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
     dependencies:
@@ -629,11 +623,6 @@ packages:
   /convert-source-map/1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
     dev: true
-
-  /cookie/0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
-    dev: false
 
   /cssesc/3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -1498,13 +1487,6 @@ packages:
     dependencies:
       is-number: 7.0.0
     dev: true
-
-  /universal-cookie/4.0.4:
-    resolution: {integrity: sha512-lbRVHoOMtItjWbM7TwDLdl8wug7izB0tq3/YVKhT/ahB4VDvWMyvnADfnJI8y6fSvsjh51Ix7lTGC6Tn4rMPhw==}
-    dependencies:
-      '@types/cookie': 0.3.3
-      cookie: 0.4.2
-    dev: false
 
   /update-browserslist-db/1.0.10_browserslist@4.21.4:
     resolution: {integrity: sha512-OztqDenkfFkbSG+tRxBeAnCVPckDBcvibKd35yDONx6OU8N7sqgwc7rCbkJ/WcYtVRZ4ba68d6byhC21GFh7sQ==}

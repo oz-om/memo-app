@@ -9,7 +9,7 @@ export default function SearchAndAdd() {
 
   function toggleSearchMode(state) {
     dispatch(switchSearchMode(state));
-    let toggleSearchUI = useToggleSearchUI(state, activatedReducer, dispatch, notesReducer);
+    let toggleSearchUI = useToggleSearchUI(state, activatedReducer, dispatch, notesReducer.notes);
     toggleSearchUI();
   }
   function search(target) {
@@ -17,9 +17,9 @@ export default function SearchAndAdd() {
     let value = target.value;
     if (!value.length) {
       resetFocus(true);
-      dispatch(setupNotes(notesReducer));
+      dispatch(setupNotes(notesReducer.notes));
     } else {
-      let result = notesReducer.filter((n) => {
+      let result = notesReducer.notes.filter((n) => {
         let title = n.title,
           note = n.note;
         return title.includes(value) || note.includes(value);
@@ -34,7 +34,7 @@ export default function SearchAndAdd() {
     //@ts-ignore
     inputSearch.value = "";
     resetFocus(true);
-    dispatch(setupNotes(notesReducer));
+    dispatch(setupNotes(notesReducer.notes));
   }
 
   return (

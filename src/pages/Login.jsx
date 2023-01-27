@@ -3,10 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Method, Line, Input, FormBtn } from "../components/form";
 import Footer from "../components/Footer";
-import { setEmail, setPassword, updateUserState } from "../store/reducers";
+import { updateUserState } from "../store/reducers";
 import axios from "axios";
-import Cookie from "universal-cookie";
-const cookie = new Cookie();
 const { VITE_API_KEY } = process.env;
 
 export default function Login() {

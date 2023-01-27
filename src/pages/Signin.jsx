@@ -3,16 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input, Line, Method, FormBtn } from "../components/form";
 import Footer from "../components/Footer";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { setRegisterUsername, setRegisterEmail, setRegisterPassword } from "../store/reducers";
+import { useSelector } from "react-redux";
 const { VITE_API_KEY } = process.env;
 
 export default function Signin() {
   //@ts-ignore
-  const { userReducer, registerReducer } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
   const [registerState, setRegisterState] = useState({ register: true });
+  const [inputs, setInputs] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
+  function handelInputs(target) {
+    setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
+  }
   useEffect(() => {
     if (userReducer.userState) {
       navigate("/");
@@ -25,7 +32,7 @@ export default function Signin() {
         "Content-type": "application/json",
       },
     };
-    const req = await axios.post(`${VITE_API_KEY}/register`, registerReducer, options);
+    const req = await axios.post(`${VITE_API_KEY}/register`, inputs, options);
     const res = await req.data;
     if (res.register) {
       navigate("/log-in");
@@ -62,9 +69,9 @@ export default function Signin() {
             )
           }
           <form className='grid place-content-center' onSubmit={(e) => register(e)}>
-            <Input fieldName='username' type='text' placeholder='username' method={(e) => dispatch(setRegisterUsername(e.target.value))} />
-            <Input fieldName='email' type='email' placeholder='examle@mail.com' method={(e) => dispatch(setRegisterEmail(e.target.value))} />
-            <Input fieldName='password' type='password' placeholder='password' method={(e) => dispatch(setRegisterPassword(e.target.value))} />
+            <Input fieldName='username' type='text' placeholder='username' name='username' method={(e) => handelInputs(e.target)} />
+            <Input fieldName='email' type='email' placeholder='examle@mail.com' name='email' method={(e) => handelInputs(e.target)} />
+            <Input fieldName='password' type='password' placeholder='password' name='password' method={(e) => handelInputs(e.target)} />
             <FormBtn name='register' />
             <p>
               already have an account ?{" "}
