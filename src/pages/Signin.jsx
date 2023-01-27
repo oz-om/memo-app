@@ -24,7 +24,6 @@ export default function Signin() {
       headers: {
         "Content-type": "application/json",
       },
-      withCredentials: true,
     };
     const req = await axios.post(`${VITE_API_KEY}/register`, registerReducer, options);
     const res = await req.data;
