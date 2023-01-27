@@ -21,19 +21,29 @@ export default function Folder(props) {
     dispatch(switchModifyMode(false));
   }
 
+  let addRequestController;
   async function addFolder() {
     setAddSpin(true);
+    if (addRequestController) {
+      addRequestController.abort();
+      addRequestController = null;
+    }
+
+    addRequestController = new AbortController();
+    const { signal } = addRequestController;
     const folder = {
       newFolder,
       ownerId,
     };
     const options = {
+      signal,
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     };
     const req = await axios.post(`${VITE_API_KEY}/addFolder`, folder, options);
+    addRequestController = null;
     const res = await req.data;
     if (res.isAdd) {
       setAddSpin(true);
@@ -50,18 +60,27 @@ export default function Folder(props) {
     }
   }
 
+  let DRequestController;
   async function deleteFolder(folderId) {
     setDeleteSpin(true);
+    if (DRequestController) {
+      DRequestController.abort();
+      DRequestController = null;
+    }
+    DRequestController = new AbortController();
+    const { signal } = DRequestController;
     const selectedFolder = {
       id: folderId,
     };
     const options = {
+      signal,
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     };
     const req = await axios.post(`${VITE_API_KEY}/deleteFolder`, selectedFolder, options);
+    DRequestController = null;
     const res = await req.data;
     if (res.isDeleted) {
       dispatch(removeFolder(+folderId));
@@ -82,20 +101,31 @@ export default function Folder(props) {
     document.getElementById(`folder_name_${name}`).textContent = name;
   }
 
+  let renameRequestController;
   async function saveNewName(target) {
     setSaveSpin(true);
+    if (renameRequestController) {
+      renameRequestController.abort();
+      renameRequestController = null;
+    }
+
+    renameRequestController = new AbortController();
+    const { signal } = renameRequestController;
+
     const update = {
       oldName: name,
       id: target,
       newName,
     };
     const options = {
+      signal,
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     };
     const req = await axios.post(`${VITE_API_KEY}/renameFolder`, update, options);
+    renameRequestController = null;
     const res = await req.data;
     if (res.isUpdate) {
       setSaveSpin(false);
@@ -158,7 +188,7 @@ export default function Folder(props) {
               <i className='iconoir-cancel mx-auto text-xl'></i>
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
-            <div onClick={() => addFolder()} className='saveNewFolder grid place-content-center text-emerald-400 cursor-pointer'>
+            <div onClick={() => addFolder()} className={"saveNewFolder grid place-content-center text-emerald-400 cursor-pointer" + (addSpin && " pointer-events-none")}>
               <i className={"mx-auto text-xl " + (addSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-double-check")}></i>
               <span className='text-[10px] font-bold cursor-pointer'>add</span>
             </div>
@@ -169,7 +199,7 @@ export default function Folder(props) {
               <i className='iconoir-cancel mx-auto text-xl'></i>
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
-            <div id={folder_id} onClick={(e) => saveNewName(e.currentTarget.id)} className='grid place-content-center text-emerald-400 cursor-pointer'>
+            <div id={folder_id} onClick={(e) => saveNewName(e.currentTarget.id)} className={"grid place-content-center text-emerald-400 cursor-pointer" + (saveSpin && " pointer-events-none")}>
               <i className={"mx-auto text-xl" + (saveSpin ? " iconoir-refresh-double animate-spin cursor-no-drop" : " iconoir-send")}></i>
               <span className='text-[10px] font-bold'>save</span>
             </div>
@@ -177,7 +207,7 @@ export default function Folder(props) {
         ) : (
           name != "uncategorized" && (
             <>
-              <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className='grid place-content-center text-red-400'>
+              <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className={"grid place-content-center text-red-400 " + (deleteSpin && "pointer-events-none")}>
                 <i className={"mx-auto text-xl " + (deleteSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-trash")}></i>
                 <span className='text-[10px] font-bold'>delete</span>
               </div>

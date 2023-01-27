@@ -28,7 +28,8 @@ export default function CreateBlock() {
   const dispatch = useDispatch();
   const [title, setTitleNote] = useState("");
   const [note, setNote] = useState("");
-  const [spin, setSpin] = useState(false);
+  const [createSpin, setCreateSpin] = useState(false);
+  const [saveSpin, setSaveSpin] = useState(false);
 
   function initIframeDoc(iframe) {
     let editorDoc = iframe.contentDocument;
@@ -37,8 +38,18 @@ export default function CreateBlock() {
       setNote(editorDoc.body.innerHTML);
     };
   }
+
+  let addRequestController;
   async function addNote() {
-    setSpin(true);
+    setCreateSpin(true);
+    if (addRequestController) {
+      addRequestController.abort();
+      addRequestController = null;
+    }
+
+    addRequestController = new AbortController();
+    const { signal } = addRequestController;
+
     let theme = getComputedStyle(document.querySelector(".title input"));
     let folder;
     if (!getFolder()) {
@@ -60,17 +71,22 @@ export default function CreateBlock() {
     };
 
     const options = {
+      signal,
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     };
     const req = await axios.post(`${VITE_API_KEY}/addNote`, Note, options);
+    addRequestController = null;
     const res = await req.data;
     if (res.isPush) {
-      setSpin(false);
+      setCreateSpin(false);
       dispatch(pushNote({ id: res.noteId, ...Note }));
       goBack();
+    } else {
+      setCreateSpin(false);
+      console.log(res.msg);
     }
   }
 
@@ -91,26 +107,42 @@ export default function CreateBlock() {
       cancel();
     }
   }
+
+  let editNoteRequestController;
   async function saveChanges() {
+    setSaveSpin(true);
+    if (editNoteRequestController) {
+      editNoteRequestController.abort();
+      editNoteRequestController = null;
+    }
     let theme = getComputedStyle(document.querySelector(".title input"));
     if (checkChanges(title, noteModifyMode.title).isChanged || checkChanges(note, noteModifyMode.note).isChanged) {
+      editNoteRequestController = new AbortController();
+      const { signal } = editNoteRequestController;
       const Note = {
+        noteId: noteModifyMode.id,
         newTitle: checkChanges(title, noteModifyMode.title).inputValue,
         newNote: checkChanges(note, noteModifyMode.note).inputValue,
         bgColor: theme.backgroundColor,
         color: theme.color,
       };
       const options = {
+        signal,
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       };
       const req = await axios.post(`${VITE_API_KEY}/updateNote`, Note, options);
+      editNoteRequestController = null;
       const res = await req.data;
       if (res.isUpdate) {
+        setSaveSpin(false);
         dispatch(updateNote(Note));
         cancel();
+      } else {
+        setSaveSpin(false);
+        console.log(res.msg);
       }
     }
   }
@@ -128,8 +160,8 @@ export default function CreateBlock() {
               <div className='cancelChanges'>
                 <i onClick={() => cancelChanges()} className='iconoir-cancel font-black text-3xl cursor-pointer'></i>
               </div>
-              <div onClick={() => saveChanges()} className='saveChanges text-green-200 bg-green-100 border border-green-100 rounded-md text-2xl cursor-pointer  py-[2px] px-1 h-6 grid place-content-center pointer-events-none'>
-                <i className='iconoir-double-check'></i>
+              <div onClick={() => saveChanges()} className={"saveChanges text-green-200 bg-green-100 border border-green-100 rounded-md text-2xl cursor-pointer  py-[2px] px-2 grid place-content-center pointer-events-none " + (saveSpin && "pointer-events-none")}>
+                <i className={"px-1 h-6 grid place-content-center " + (saveSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-double-check")}></i>
               </div>
             </>
           ) : (
@@ -137,8 +169,8 @@ export default function CreateBlock() {
               <div>
                 <i className='iconoir-arrow-left font-black text-3xl cursor-pointer' onClick={() => goBack()}></i>
               </div>
-              <div className='text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md py-[2px] px-2'>
-                <i onClick={() => addNote()} className={"px-1 h-6 grid place-content-center" + (spin ? " iconoir-refresh-double animate-spin cursor-no-drop" : " iconoir-send  cursor-pointer")}></i>
+              <div className='text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md py-[2px] px-2 cursor-pointer'>
+                <i onClick={() => addNote()} className={"px-1 h-6 grid place-content-center" + (createSpin ? " iconoir-refresh-double animate-spin cursor-no-drop pointer-events-none" : " iconoir-send")}></i>
               </div>
             </>
           )}

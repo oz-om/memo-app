@@ -3,6 +3,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeNote, switchNoteModifyMode, switchSearchMode } from "../../../store/reducers";
 import { getCreateBlock, useToggleSearchUI } from "../../../global";
+import { useState } from "react";
 const { VITE_API_KEY } = process.env;
 
 function toggleOptions(target) {
@@ -19,22 +20,37 @@ function toggleOptions(target) {
 }
 
 export default function Note(props) {
+  const [deleteSpin, setDeleteSpin] = useState(false);
   //@ts-ignore
   const { notesReducer, activatedReducer, searchMode } = useSelector((state) => state);
   const dispatch = useDispatch();
 
+  let deleteNoteRequestController;
   async function deleteNote(ele) {
+    setDeleteSpin(true);
+    if (deleteNoteRequestController) {
+      deleteNoteRequestController.abort();
+      deleteNoteRequestController = null;
+    }
+    deleteNoteRequestController = new AbortController();
+    const { signal } = deleteNoteRequestController;
     const noteId = ele.dataset.delete;
     const options = {
+      signal,
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     };
     const req = await axios.post(`${VITE_API_KEY}/deleteNote`, { noteId }, options);
+    deleteNoteRequestController = null;
     const res = await req.data;
     if (res.deleted) {
       dispatch(removeNote(+noteId));
+      setDeleteSpin(false);
+    } else {
+      setDeleteSpin(false);
+      console.log(res.msg);
     }
   }
 
@@ -97,8 +113,8 @@ export default function Note(props) {
               <i className='iconoir-share-ios'></i>
               <span>move</span>
             </li>
-            <li data-delete={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
-              <i className='iconoir-trash'></i>
+            <li data-delete={id} onClick={(e) => deleteNote(e.currentTarget)} className={"flex gap-x-1 items-center px-2  cursor-pointer " + (deleteSpin && "pointer-events-none")}>
+              <i className={deleteSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-trash"}></i>
               <span>delete</span>
             </li>
           </ul>

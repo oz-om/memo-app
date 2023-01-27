@@ -62,10 +62,11 @@ export default function Notes() {
             return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
           })}
         </Masonry>
+      ) : notesReducer.errMsg.length > 0 ? (
+        <Error msg={notesReducer.errMsg} />
       ) : (
         <EmptyBlock />
       )}
-      {notesReducer.errMsg.length > 0 && <Error msg={notesReducer.errMsg} />}
     </div>
   );
 }

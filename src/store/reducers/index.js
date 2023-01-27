@@ -79,7 +79,7 @@ export const notesSlice = createSlice({
     },
     updateNote: function (state, action) {
       const specificNote = state.notes.find((note) => {
-        return note.id == action.payload.id;
+        return note.id == action.payload.noteId;
       });
       specificNote.title = action.payload.newTitle;
       specificNote.note = action.payload.newNote;
