@@ -9,6 +9,9 @@ export default function Folder(props) {
   const [newFolder, setNewFolder] = useState("");
   const [renameState, setRenameState] = useState(false);
   const [newName, setNewName] = useState("");
+  const [addSpin, setAddSpin] = useState(false);
+  const [saveSpin, setSaveSpin] = useState(false);
+  const [deleteSpin, setDeleteSpin] = useState(false);
   const dispatch = useDispatch();
   const ownerId = userReducer.user.id;
 
@@ -19,6 +22,7 @@ export default function Folder(props) {
   }
 
   async function addFolder() {
+    setAddSpin(true);
     const folder = {
       newFolder,
       ownerId,
@@ -32,6 +36,7 @@ export default function Folder(props) {
     const req = await axios.post(`${VITE_API_KEY}/addFolder`, folder, options);
     const res = await req.data;
     if (res.isAdd) {
+      setAddSpin(true);
       dispatch(
         pushFolder({
           id: res.id,
@@ -40,11 +45,13 @@ export default function Folder(props) {
       );
       rest();
     } else {
+      setAddSpin(true);
       console.log(res.msg);
     }
   }
 
   async function deleteFolder(folderId) {
+    setDeleteSpin(true);
     const selectedFolder = {
       id: folderId,
     };
@@ -58,8 +65,10 @@ export default function Folder(props) {
     const res = await req.data;
     if (res.isDeleted) {
       dispatch(removeFolder(+folderId));
+      setDeleteSpin(false);
     } else {
       console.log(res.msg);
+      setDeleteSpin(false);
     }
   }
 
@@ -74,6 +83,7 @@ export default function Folder(props) {
   }
 
   async function saveNewName(target) {
+    setSaveSpin(true);
     const update = {
       oldName: name,
       id: target,
@@ -88,9 +98,11 @@ export default function Folder(props) {
     const req = await axios.post(`${VITE_API_KEY}/renameFolder`, update, options);
     const res = await req.data;
     if (res.isUpdate) {
+      setSaveSpin(false);
       dispatch(reNameFolder(update));
       setRenameState(false);
     } else {
+      setSaveSpin(false);
       console.log(res.msg);
     }
   }
@@ -147,7 +159,7 @@ export default function Folder(props) {
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
             <div onClick={() => addFolder()} className='saveNewFolder grid place-content-center text-emerald-400 cursor-pointer'>
-              <i className='iconoir-double-check mx-auto text-xl'></i>
+              <i className={"mx-auto text-xl " + (addSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-double-check")}></i>
               <span className='text-[10px] font-bold cursor-pointer'>add</span>
             </div>
           </>
@@ -158,7 +170,7 @@ export default function Folder(props) {
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
             <div id={folder_id} onClick={(e) => saveNewName(e.currentTarget.id)} className='grid place-content-center text-emerald-400 cursor-pointer'>
-              <i className='iconoir-send mx-auto text-xl'></i>
+              <i className={"mx-auto text-xl" + (saveSpin ? " iconoir-refresh-double animate-spin cursor-no-drop" : " iconoir-send")}></i>
               <span className='text-[10px] font-bold'>save</span>
             </div>
           </>
@@ -166,7 +178,7 @@ export default function Folder(props) {
           name != "uncategorized" && (
             <>
               <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className='grid place-content-center text-red-400'>
-                <i className='iconoir-trash mx-auto text-xl'></i>
+                <i className={"mx-auto text-xl " + (deleteSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-trash")}></i>
                 <span className='text-[10px] font-bold'>delete</span>
               </div>
               <div onClick={() => renameFolder()} className='grid place-content-center text-emerald-400 cursor-pointer'>

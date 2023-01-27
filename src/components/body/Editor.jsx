@@ -28,6 +28,7 @@ export default function CreateBlock() {
   const dispatch = useDispatch();
   const [title, setTitleNote] = useState("");
   const [note, setNote] = useState("");
+  const [spin, setSpin] = useState(false);
 
   function initIframeDoc(iframe) {
     let editorDoc = iframe.contentDocument;
@@ -37,6 +38,7 @@ export default function CreateBlock() {
     };
   }
   async function addNote() {
+    setSpin(true);
     let theme = getComputedStyle(document.querySelector(".title input"));
     let folder;
     if (!getFolder()) {
@@ -66,6 +68,7 @@ export default function CreateBlock() {
     const req = await axios.post(`${VITE_API_KEY}/addNote`, Note, options);
     const res = await req.data;
     if (res.isPush) {
+      setSpin(false);
       dispatch(pushNote({ id: res.noteId, ...Note }));
       goBack();
     }
@@ -134,8 +137,8 @@ export default function CreateBlock() {
               <div>
                 <i className='iconoir-arrow-left font-black text-3xl cursor-pointer' onClick={() => goBack()}></i>
               </div>
-              <div>
-                <i className='iconoir-send text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md cursor-pointer py-[2px] px-1 h-6 grid place-content-center' onClick={() => addNote()}></i>
+              <div className='text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md py-[2px] px-2'>
+                <i onClick={() => addNote()} className={"px-1 h-6 grid place-content-center" + (spin ? " iconoir-refresh-double animate-spin cursor-no-drop" : " iconoir-send  cursor-pointer")}></i>
               </div>
             </>
           )}
