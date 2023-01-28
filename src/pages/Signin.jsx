@@ -58,46 +58,48 @@ export default function Signin() {
 
   return (
     <main className='pt-20 h-[calc(100vh_-_52px)] overflow-auto customScroll'>
-      <div className='container'>
-        <div className='partOne grid place-content-center'>
-          <h2 className='text-3xl font-black'>Register For Free</h2>
-          <span className='font-black text-orange-300 text-center my-5'>with</span>
-          <div className='auth-options'>
-            <ul className='grid gap-y-2 place-content-center'>
-              <Method name='google' theme='bg-red-500' />
-              <Method name='facebook' theme='bg-blue-500' />
-            </ul>
+      {!userReducer.userState && (
+        <div className='container'>
+          <div className='partOne grid place-content-center'>
+            <h2 className='text-3xl font-black'>Register For Free</h2>
+            <span className='font-black text-orange-300 text-center my-5'>with</span>
+            <div className='auth-options'>
+              <ul className='grid gap-y-2 place-content-center'>
+                <Method name='google' theme='bg-red-500' />
+                <Method name='facebook' theme='bg-blue-500' />
+              </ul>
+            </div>
           </div>
-        </div>
-        <Line />
-        <div className='parTow'>
-          <h2 className='text-center'>create an account</h2>
-          {
-            // @ts-ignore
-            !registerState.register && (
-              <p className='bg-red-100 text-red-500 py-1 mt-2 border border-red-500 rounded text-center w-80 mx-auto'>
-                {
-                  // @ts-ignore
-                  registerState.msg
-                }
+          <Line />
+          <div className='parTow'>
+            <h2 className='text-center'>create an account</h2>
+            {
+              // @ts-ignore
+              !registerState.register && (
+                <p className='bg-red-100 text-red-500 py-1 mt-2 border border-red-500 rounded text-center w-80 mx-auto'>
+                  {
+                    // @ts-ignore
+                    registerState.msg
+                  }
+                </p>
+              )
+            }
+            <form className='grid place-content-center' onSubmit={(e) => register(e)}>
+              <Input fieldName='username' type='text' placeholder='username' name='username' method={(e) => handelInputs(e.target)} />
+              <Input fieldName='email' type='email' placeholder='examle@mail.com' name='email' method={(e) => handelInputs(e.target)} />
+              <Input fieldName='password' type='password' placeholder='password' name='password' method={(e) => handelInputs(e.target)} />
+              <FormBtn name='register' loading={signSpin} />
+              <p>
+                already have an account ?{" "}
+                <Link to='/log-in' className='text-orange-500'>
+                  login!
+                </Link>
               </p>
-            )
-          }
-          <form className='grid place-content-center' onSubmit={(e) => register(e)}>
-            <Input fieldName='username' type='text' placeholder='username' name='username' method={(e) => handelInputs(e.target)} />
-            <Input fieldName='email' type='email' placeholder='examle@mail.com' name='email' method={(e) => handelInputs(e.target)} />
-            <Input fieldName='password' type='password' placeholder='password' name='password' method={(e) => handelInputs(e.target)} />
-            <FormBtn name='register' loading={signSpin} />
-            <p>
-              already have an account ?{" "}
-              <Link to='/log-in' className='text-orange-500'>
-                login!
-              </Link>
-            </p>
-          </form>
+            </form>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      )}
     </main>
   );
 }
