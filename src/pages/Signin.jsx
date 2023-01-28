@@ -4,6 +4,7 @@ import { Input, Line, Method, FormBtn, isValid } from "../components/form";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Loading from "../components/Loading";
 const { VITE_API_KEY } = process.env;
 
 export default function Signin() {
@@ -58,7 +59,9 @@ export default function Signin() {
 
   return (
     <main className='pt-20 h-[calc(100vh_-_52px)] overflow-auto customScroll'>
-      {!userReducer.userState && (
+      {!userReducer.userState && userReducer.loading ? (
+        <Loading />
+      ) : (
         <div className='container'>
           <div className='partOne grid place-content-center'>
             <h2 className='text-3xl font-black'>Register For Free</h2>

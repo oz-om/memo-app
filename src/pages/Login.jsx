@@ -5,6 +5,7 @@ import { Method, Line, Input, FormBtn, isValid } from "../components/form";
 import Footer from "../components/Footer";
 import { updateUserState } from "../store/reducers";
 import axios from "axios";
+import Loading from "../components/Loading";
 const { VITE_API_KEY } = process.env;
 
 export default function Login() {
@@ -58,7 +59,9 @@ export default function Login() {
 
   return (
     <main className='h-[calc(100vh_-_52px)] overflow-auto customScroll'>
-      {!userReducer.userState && (
+      {!userReducer.userState && userReducer.loading ? (
+        <Loading />
+      ) : (
         <div className='container'>
           <h2 className='text-center text-2xl font-bold px-5 mt-14 mb-8'>Get the best Memorization experience, for free!</h2>
           <div className={boxStyle}>
