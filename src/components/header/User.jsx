@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { updateUserState } from "../../store/reducers";
+const { VITE_API_KEY } = process.env;
 
 function Options(props) {
   const { path, name, addStyle, method } = props;
@@ -21,7 +22,7 @@ export default function User() {
     document.querySelector(".user .headLinks").classList.toggle("w-40");
   }
   async function logout() {
-    const req = await axios.get("http://127.0.0.1:4011/logout", { withCredentials: true });
+    const req = await axios.get(`${VITE_API_KEY}+/logout`, { withCredentials: true });
     const res = await req.data;
     if (res.logout) {
       dispatch(updateUserState({ login: false, user: "" }));
