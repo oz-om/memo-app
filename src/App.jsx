@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import Loading from "./components/Loading";
-import Head from "./components/Head";
-import Body from "./components/Body";
-import Login from "./pages/Login";
-import Signin from "./pages/Signin";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
 import { useSelector, useDispatch } from "react-redux";
-import { isUser, fetchFolders, fetchNotes } from "./store/reducers";
+
+const Loading = lazy(() => import("./components/Loading"));
+const Head = lazy(() => import("./components/Head"));
+const Body = lazy(() => import("./components/Body"));
+const Login = lazy(() => import("./pages/Login"));
+const Signin = lazy(() => import("./pages/Signin"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 export default function App() {
   //@ts-ignore
@@ -17,13 +17,13 @@ export default function App() {
   useEffect(() => {
     if (!userReducer.userState) {
       // @ts-ignore
-      dispatch(isUser());
+      import("./store/reducers").then((module) => dispatch(module.isUser()));
     }
     if (userReducer.userState) {
       //@ts-ignore
-      dispatch(fetchNotes());
+      import("./store/reducers").then((module) => dispatch(module.fetchFolders()));
       //@ts-ignore
-      dispatch(fetchFolders());
+      import("./store/reducers").then((module) => dispatch(module.fetchNotes()));
     }
   }, [userReducer.userState]);
 
@@ -33,16 +33,18 @@ export default function App() {
         <Loading />
       ) : (
         <>
-          <Head />
-          <Routes>
-            <Route path='/' element={<Body />} />
+          <Suspense fallback={<Loading />}>
+            <Head />
+            <Routes>
+              <Route path='/' element={<Body />} />
 
-            <Route path='/log-in' element={<Login />} />
-            <Route path='/sign-in' element={<Signin />} />
+              <Route path='/log-in' element={<Login />} />
+              <Route path='/sign-in' element={<Signin />} />
 
-            <Route path='/about' element={<About />} />
-            <Route path='/contact' element={<Contact />} />
-          </Routes>
+              <Route path='/about' element={<About />} />
+              <Route path='/contact' element={<Contact />} />
+            </Routes>
+          </Suspense>
         </>
       )}
     </>

@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setupNotes } from "../../store/reducers";
 import { getCreateBlock, useActivatedFolder } from "../../global";
 import { LoadNotes } from "../Loading";
-import { Error } from "../Error";
+import { lazy, Suspense } from "react";
+const Error = lazy(() => import("../Error").then((module) => ({ default: module.Error })));
 
 function EmptyBlock() {
   return (
@@ -63,7 +64,9 @@ export default function Notes() {
           })}
         </Masonry>
       ) : notesReducer.errMsg.length > 0 ? (
-        <Error msg={notesReducer.errMsg} />
+        <Suspense>
+          <Error msg={notesReducer.errMsg} />
+        </Suspense>
       ) : (
         <EmptyBlock />
       )}

@@ -78,3 +78,10 @@ export function useToggleSearchUI(searchMode, activatedReducer, dispatch, notes)
   }
   return toggleUI;
 }
+
+// simulate slow connection
+export function wait(time) {
+  return new Promise((resolve) => {
+    setInterval(resolve, time);
+  });
+}

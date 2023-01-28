@@ -4,7 +4,8 @@ import { updateActivated } from "../../store/reducers";
 import BarFolder from "./folder/BarFolder";
 import { LoadFolders } from "../Loading";
 import { getFoldersBlock, useActivatedFolder } from "../../global";
-import { Error } from "../Error";
+import { lazy, Suspense } from "react";
+const Error = lazy(() => import("../Error").then((module) => ({ default: module.Error })));
 
 export default function Bar() {
   //@ts-ignore
@@ -62,7 +63,11 @@ export default function Bar() {
           ) : (
             foldersReducer.folders.length > 0 && foldersReducer.folders.map((folder) => <BarFolder key={folder.id} id={folder.id} name={folder.folder} click={active_toggle} />)
           )}
-          {foldersReducer.errMsg.length > 0 && <Error msg={foldersReducer.errMsg.split(",")[0]} />}
+          {foldersReducer.errMsg.length > 0 && (
+            <Suspense>
+              <Error msg={foldersReducer.errMsg.split(",")[0]} />
+            </Suspense>
+          )}
         </ul>
       </ul>
       <span className='flex items-center' onClick={() => getFoldersBlock()}>
