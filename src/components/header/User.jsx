@@ -22,7 +22,7 @@ export default function User() {
     document.querySelector(".user .headLinks").classList.toggle("w-40");
   }
   async function logout() {
-    const req = await axios.get(`${VITE_API_KEY}+/logout`, { withCredentials: true });
+    const req = await axios.get(`${VITE_API_KEY}/logout`, { withCredentials: true });
     const res = await req.data;
     if (res.logout) {
       dispatch(updateUserState({ login: false, user: "" }));
