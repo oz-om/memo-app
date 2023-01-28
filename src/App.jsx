@@ -29,24 +29,16 @@ export default function App() {
 
   return (
     <>
-      {userReducer.loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Suspense fallback={<Loading />}>
-            <Head />
-            <Routes>
-              <Route path='/' element={<Body />} />
-
-              <Route path='/log-in' element={<Login />} />
-              <Route path='/sign-in' element={<Signin />} />
-
-              <Route path='/about' element={<About />} />
-              <Route path='/contact' element={<Contact />} />
-            </Routes>
-          </Suspense>
-        </>
-      )}
+      <Head />
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path='/' element={<Body />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/contact' element={<Contact />} />
+          <Route path='/log-in' element={<Login />} />
+          <Route path='/sign-in' element={<Signin />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }
