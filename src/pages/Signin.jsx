@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Line, Method, FormBtn } from "../components/form";
+import { Input, Line, Method, FormBtn, isValid } from "../components/form";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -10,22 +10,35 @@ export default function Signin() {
   //@ts-ignore
   const { userReducer } = useSelector((state) => state);
   const [registerState, setRegisterState] = useState({ register: true });
+  const [signSpin, setSignSpin] = useState(false);
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
+  const [registerBtn, setRegisterBtn] = useState();
 
-  function handelInputs(target) {
-    setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
-  }
+  const navigate = useNavigate();
   useEffect(() => {
     if (userReducer.userState) {
       navigate("/");
     }
+    //@ts-ignore
+    setRegisterBtn(document.querySelector("form #register"));
   }, [userReducer.userState]);
+
+  let [inputsHealth] = useState({
+    username: false,
+    email: false,
+    password: false,
+  });
+  function handelInputs(target) {
+    isValid(inputsHealth, target, target.name, target.value, registerBtn);
+    setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
+  }
+
   async function register(e) {
+    setSignSpin(true);
     e.preventDefault();
     const options = {
       headers: {
@@ -35,8 +48,10 @@ export default function Signin() {
     const req = await axios.post(`${VITE_API_KEY}/register`, inputs, options);
     const res = await req.data;
     if (res.register) {
+      setSignSpin(false);
       navigate("/log-in");
     } else {
+      setSignSpin(false);
       setRegisterState(res);
     }
   }
@@ -72,7 +87,7 @@ export default function Signin() {
             <Input fieldName='username' type='text' placeholder='username' name='username' method={(e) => handelInputs(e.target)} />
             <Input fieldName='email' type='email' placeholder='examle@mail.com' name='email' method={(e) => handelInputs(e.target)} />
             <Input fieldName='password' type='password' placeholder='password' name='password' method={(e) => handelInputs(e.target)} />
-            <FormBtn name='register' />
+            <FormBtn name='register' loading={signSpin} />
             <p>
               already have an account ?{" "}
               <Link to='/log-in' className='text-orange-500'>

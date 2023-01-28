@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Method, Line, Input, FormBtn } from "../components/form";
+import { Method, Line, Input, FormBtn, isValid } from "../components/form";
 import Footer from "../components/Footer";
 import { updateUserState } from "../store/reducers";
 import axios from "axios";
@@ -11,21 +11,32 @@ export default function Login() {
   // @ts-ignore
   const { userReducer } = useSelector((state) => state);
   const [userState, setUserState] = useState({ login: true });
+  const [loginSpin, setLoginSpin] = useState(false);
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
+  const [loginBtn, setLoginBtn] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  function handelInput(target) {
-    setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
-  }
   useEffect(() => {
     if (userReducer.userState) {
       navigate("/");
     }
+    //@ts-ignore
+    setLoginBtn(document.querySelector("form #Login"));
   }, [userReducer.userState]);
+
+  let [inputsHealth] = useState({
+    email: false,
+    password: false,
+  });
+  function handelInput(target) {
+    isValid(inputsHealth, target, target.name, target.value, loginBtn);
+    setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
+  }
   async function login() {
+    setLoginSpin(true);
     const options = {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
@@ -34,8 +45,10 @@ export default function Login() {
     const user = await req.data;
 
     if (user.login) {
+      setLoginSpin(false);
       dispatch(updateUserState(user));
     } else {
+      setLoginSpin(false);
       setUserState(user);
     }
   }
@@ -80,7 +93,7 @@ export default function Login() {
             }}
           >
             <Input
-              fieldName='user/email'
+              fieldName='email'
               type='text'
               placeholder='userId or email'
               name='email'
@@ -106,7 +119,7 @@ export default function Login() {
                 forget password?
               </Link>
             </div>
-            <FormBtn name='Login' addStyle='w-full' />
+            <FormBtn name='Login' addStyle='w-full' loading={loginSpin} />
           </form>
         </div>
         <p className='px-5 my-2 text-center'>
