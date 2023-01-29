@@ -24,10 +24,33 @@ function EmptyBlock() {
   );
 }
 function timestamp(atTime) {
-  const Hours = new Date(atTime).getHours() < 10 ? `0${new Date(atTime).getHours()}` : new Date(atTime).getHours();
-  const Minutes = new Date(atTime).getMinutes() < 10 ? `0${new Date(atTime).getMinutes()}` : new Date(atTime).getMinutes();
-  const timestamp = `${Hours}:${Minutes}`;
-  return timestamp;
+  // const Hours = new Date(atTime).getHours() < 10 ? `0${new Date(atTime).getHours()}` : new Date(atTime).getHours();
+  // const Minutes = new Date(atTime).getMinutes() < 10 ? `0${new Date(atTime).getMinutes()}` : new Date(atTime).getMinutes();
+  // const timestamp = `${Hours}:${Minutes}`;
+
+  const givenTime = new Date(atTime);
+  const currentTime = new Date();
+  //@ts-ignore
+  const timeDifference = currentTime - givenTime;
+  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+  const hours = givenTime.getHours();
+  const minutes = givenTime.getMinutes();
+  const day = givenTime.getDate();
+  const month = givenTime.toLocaleString("en-us", { month: "short" });
+  const year = givenTime.getFullYear();
+
+  if (daysDifference === 0) {
+    return `${hours}:${minutes}`;
+  } else if (daysDifference === 1) {
+    return `Yesterday at ${hours}:${minutes}`;
+  } else if (currentTime.getFullYear() === year) {
+    console.log(currentTime.getFullYear(), year);
+
+    return `${day} ${month}`;
+  } else {
+    return `${day} ${month} ${year}`;
+  }
 }
 
 export default function Notes() {

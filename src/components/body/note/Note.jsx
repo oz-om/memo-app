@@ -28,8 +28,10 @@ export default function Note(props) {
 
   let deleteNoteRequestController;
   async function deleteNote(e, ele) {
+    // to disable click event for note while deleting it
     let note = document.querySelector(`[data-edit='${ele.dataset.delete}']`);
     note.classList.add("pointer-events-none");
+
     e.stopPropagation();
     setDeleteSpin(true);
     if (deleteNoteRequestController) {
@@ -84,7 +86,7 @@ export default function Note(props) {
     <div
       data-name={folder}
       data-edit={id}
-      className='Note p-4 mb-3.5 rounded-lg max-h-48 shadow cursor-pointer'
+      className='Note p-4 pb-0 mb-3.5 rounded-lg max-h-48 shadow cursor-pointer'
       style={{
         backgroundColor: bgColor,
         color,
@@ -99,7 +101,7 @@ export default function Note(props) {
           color: changeColorOpacity(" 0.65)"),
         }}
       ></div>
-      <div className='details flex justify-between'>
+      <div className='details flex justify-between mt-3'>
         <span
           className='text-sm'
           style={{
