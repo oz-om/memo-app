@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { pushFolder, removeFolder, reNameFolder, switchModifyMode } from "../../../store/reducers";
+import { pushFolder, removeFolder, reNameFolder, switchAddMode } from "../../../store/reducers";
 const { VITE_API_KEY } = process.env;
 export default function Folder(props) {
   //@ts-ignore
-  const { userReducer } = useSelector((state) => state);
+  const { userReducer, folderAddMode } = useSelector((state) => state);
   const [newFolder, setNewFolder] = useState("");
   const [renameState, setRenameState] = useState(false);
   const [newName, setNewName] = useState("");
@@ -18,9 +18,20 @@ export default function Folder(props) {
   function rest() {
     //@ts-ignore
     document.querySelector(".folderName input").value = "";
-    dispatch(switchModifyMode(false));
+    dispatch(switchAddMode(false));
   }
 
+  function handleAddStyle_Value(value) {
+    let addBtn = document.querySelector(".controls .addNewFolder");
+    if (value.length > 0) {
+      addBtn.classList.remove("text-emerald-100", "pointer-events-none");
+      addBtn.classList.add("text-emerald-400", "cursor-pointer");
+    } else {
+      addBtn.classList.add("text-emerald-100", "pointer-events-none");
+      addBtn.classList.remove("text-emerald-400", "cursor-pointer");
+    }
+    setNewFolder(value);
+  }
   let addRequestController;
   async function addFolder() {
     setAddSpin(true);
@@ -91,16 +102,26 @@ export default function Folder(props) {
     }
   }
 
+  // rename functionality
   function renameFolder() {
     setRenameState(true);
     document.getElementById(`folder_name_${name}`).textContent = "";
   }
-
+  function handleRenameStyle_Value(value) {
+    let saveChangesBtn = document.getElementById(folder_id);
+    if (value.length > 0) {
+      saveChangesBtn.classList.remove("text-emerald-100", "pointer-events-none");
+      saveChangesBtn.classList.add("text-emerald-400", "cursor-pointer");
+    } else {
+      saveChangesBtn.classList.add("text-emerald-100", "pointer-events-none");
+      saveChangesBtn.classList.remove("text-emerald-400", "cursor-pointer");
+    }
+    setNewName(value);
+  }
   function cancelRename() {
     setRenameState(false);
     document.getElementById(`folder_name_${name}`).textContent = name;
   }
-
   let renameRequestController;
   async function saveNewName(target) {
     setSaveSpin(true);
@@ -138,25 +159,25 @@ export default function Folder(props) {
   }
 
   useEffect(() => {});
-  const { itemsCount, name, folder_id, modifyMode, method } = props;
+  const { itemsCount, name, folder_id, addMode, method } = props;
   return (
     <div data-name={name} data-id={folder_id} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent'>
       <div
         onClick={(e) => {
-          !modifyMode && method(e.currentTarget);
+          !addMode && method(e.currentTarget);
         }}
         className='info flex gap-x-1 items-center w-full px-2 py-3'
       >
-        <span className='text-[12px]'>{modifyMode ? 0 : itemsCount}</span>
+        <span className='text-[12px]'>{addMode ? 0 : itemsCount}</span>
         <div className='folderName relative w-full grid content-center h-6 -top-[2px]'>
           <h2 id={"folder_name_" + name} className='text-lg font-black px-2'>
-            {modifyMode ? "" : name}
+            {addMode ? "" : name}
           </h2>
-          {modifyMode && (
+          {addMode && (
             <input
               type='text'
               onInput={(e) =>
-                setNewFolder(
+                handleAddStyle_Value(
                   // @ts-ignore
                   e.target.value,
                 )
@@ -169,7 +190,7 @@ export default function Folder(props) {
             <input
               type='text'
               onInput={(e) =>
-                setNewName(
+                handleRenameStyle_Value(
                   // @ts-ignore
                   e.target.value,
                 )
@@ -182,15 +203,15 @@ export default function Folder(props) {
         </div>
       </div>
       <div className='controls flex gap-x-2'>
-        {modifyMode ? (
+        {addMode ? (
           <>
-            <div onClick={() => rest()} className='grid place-content-center text-red-400'>
+            <div onClick={() => rest()} className='grid place-content-center text-red-400 cursor-pointer'>
               <i className='iconoir-cancel mx-auto text-xl'></i>
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
-            <div onClick={() => addFolder()} className={"saveNewFolder grid place-content-center text-emerald-400 cursor-pointer" + (addSpin && " pointer-events-none")}>
-              <i className={"mx-auto text-xl " + (addSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-double-check")}></i>
-              <span className='text-[10px] font-bold cursor-pointer'>add</span>
+            <div onClick={() => addFolder()} className={"addNewFolder grid place-content-center text-emerald-100 pointer-events-none " + (addSpin && "pointer-events-none text-emerald-100")}>
+              <i className={"mx-auto text-xl " + (addSpin ? "iconoir-refresh-double animate-spin" : "iconoir-double-check")}></i>
+              <span className='text-[10px] font-bold'>add</span>
             </div>
           </>
         ) : renameState ? (
@@ -199,19 +220,19 @@ export default function Folder(props) {
               <i className='iconoir-cancel mx-auto text-xl'></i>
               <span className='text-[10px] font-bold'>cancel</span>
             </div>
-            <div id={folder_id} onClick={(e) => saveNewName(e.currentTarget.id)} className={"grid place-content-center text-emerald-400 cursor-pointer" + (saveSpin && " pointer-events-none")}>
-              <i className={"mx-auto text-xl" + (saveSpin ? " iconoir-refresh-double animate-spin cursor-no-drop" : " iconoir-send")}></i>
+            <div id={folder_id} onClick={(e) => saveNewName(e.currentTarget.id)} className={"grid place-content-center pointer-events-none " + (saveSpin ? " pointer-events-none text-emerald-400" : "text-emerald-100")}>
+              <i className={"mx-auto text-xl" + (saveSpin ? " iconoir-refresh-double animate-spin" : " iconoir-send")}></i>
               <span className='text-[10px] font-bold'>save</span>
             </div>
           </>
         ) : (
           name != "uncategorized" && (
             <>
-              <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className={"grid place-content-center text-red-400 " + (deleteSpin && "pointer-events-none")}>
-                <i className={"mx-auto text-xl " + (deleteSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-trash")}></i>
+              <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className={"grid place-content-center text-red-400 cursor-pointer" + (deleteSpin && "pointer-events-none")}>
+                <i className={"mx-auto text-xl " + (deleteSpin ? "iconoir-refresh-double animate-spin" : "iconoir-trash")}></i>
                 <span className='text-[10px] font-bold'>delete</span>
               </div>
-              <div onClick={() => renameFolder()} className='grid place-content-center text-emerald-400 cursor-pointer'>
+              <div onClick={(e) => renameFolder()} className='grid place-content-center text-emerald-400 cursor-pointer '>
                 <i className='iconoir-edit mx-auto text-xl'></i>
                 <span className='text-[10px] font-bold'>rename</span>
               </div>

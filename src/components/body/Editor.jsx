@@ -161,7 +161,7 @@ export default function CreateBlock() {
               <div className='cancelChanges'>
                 <i onClick={() => cancelChanges()} className='iconoir-cancel font-black text-3xl cursor-pointer'></i>
               </div>
-              <div onClick={() => saveChanges()} className={"saveChanges text-green-200 bg-green-100 border border-green-100 rounded-md text-2xl cursor-pointer  py-[2px] px-2 grid place-content-center pointer-events-none " + (saveSpin && "pointer-events-none")}>
+              <div onClick={() => saveChanges()} className={"saveChanges text-green-200 bg-green-100 border border-green-100 rounded-md text-2xl  py-[2px] px-2 grid place-content-center pointer-events-none " + (saveSpin && "pointer-events-none")}>
                 <i className={"px-1 h-6 grid place-content-center " + (saveSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-double-check")}></i>
               </div>
             </>
@@ -170,8 +170,8 @@ export default function CreateBlock() {
               <div>
                 <i className='iconoir-arrow-left font-black text-3xl cursor-pointer' onClick={() => goBack()}></i>
               </div>
-              <div className='text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md py-[2px] px-2 cursor-pointer'>
-                <i onClick={() => addNote()} className={"px-1 h-6 grid place-content-center" + (createSpin ? " iconoir-refresh-double animate-spin cursor-no-drop pointer-events-none" : " iconoir-send")}></i>
+              <div onClick={() => addNote()} className={"text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md py-[2px] px-2 " + (createSpin ? "pointer-events-none" : "cursor-pointer ")}>
+                <i className={"px-1 h-6 grid place-content-center" + (createSpin ? " iconoir-refresh-double animate-spin" : " iconoir-send")}></i>
               </div>
             </>
           )}

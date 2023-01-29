@@ -6,10 +6,10 @@ function editor() {
 
 //editor controls
 function validStyle() {
-  let saveChangesBtn = document.querySelector(".saveChanges");
+  let saveChangesBtn = document.querySelector(".noteControls .saveChanges");
   if (saveChangesBtn) {
     saveChangesBtn.classList.remove("pointer-events-none", "text-green-200", "border-green-100");
-    saveChangesBtn.classList.add("text-green-400", "border-green-400");
+    saveChangesBtn.classList.add("text-green-400", "border-green-400", "cursor-pointer");
   }
 }
 function goBack() {

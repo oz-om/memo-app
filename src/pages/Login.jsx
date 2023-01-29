@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { updateUserState } from "../store/reducers";
 import axios from "axios";
 import Loading from "../components/Loading";
+import { useRef } from "react";
 const { VITE_API_KEY } = process.env;
 
 export default function Login() {
@@ -17,15 +18,12 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [loginBtn, setLoginBtn] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     if (userReducer.userState) {
       navigate("/");
     }
-    //@ts-ignore
-    setLoginBtn(document.querySelector("form #Login"));
   }, [userReducer.userState]);
 
   let [inputsHealth] = useState({
@@ -33,6 +31,7 @@ export default function Login() {
     password: false,
   });
   function handelInput(target) {
+    let loginBtn = document.querySelector("form #Login");
     isValid(inputsHealth, target, target.name, target.value, loginBtn);
     setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
   }

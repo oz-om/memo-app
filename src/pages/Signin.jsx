@@ -17,15 +17,12 @@ export default function Signin() {
     email: "",
     password: "",
   });
-  const [registerBtn, setRegisterBtn] = useState();
 
   const navigate = useNavigate();
   useEffect(() => {
     if (userReducer.userState) {
       navigate("/");
     }
-    //@ts-ignore
-    setRegisterBtn(document.querySelector("form #register"));
   }, [userReducer.userState]);
 
   let [inputsHealth] = useState({
@@ -34,6 +31,7 @@ export default function Signin() {
     password: false,
   });
   function handelInputs(target) {
+    let registerBtn = document.querySelector("form #register");
     isValid(inputsHealth, target, target.name, target.value, registerBtn);
     setInputs((inputs) => ({ ...inputs, [target.name]: target.value }));
   }

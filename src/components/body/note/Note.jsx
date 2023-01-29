@@ -6,7 +6,8 @@ import { getCreateBlock, useToggleSearchUI } from "../../../global";
 import { useState } from "react";
 const { VITE_API_KEY } = process.env;
 
-function toggleOptions(target) {
+function toggleOptions(e, target) {
+  e.stopPropagation();
   let options = document.querySelectorAll(".Note .options .noteControlsOptions");
   options.forEach((list) => {
     if (target.nextElementSibling == list) {
@@ -26,7 +27,10 @@ export default function Note(props) {
   const dispatch = useDispatch();
 
   let deleteNoteRequestController;
-  async function deleteNote(ele) {
+  async function deleteNote(e, ele) {
+    let note = document.querySelector(`[data-edit='${ele.dataset.delete}']`);
+    note.classList.add("pointer-events-none");
+    e.stopPropagation();
     setDeleteSpin(true);
     if (deleteNoteRequestController) {
       deleteNoteRequestController.abort();
@@ -79,11 +83,13 @@ export default function Note(props) {
   return (
     <div
       data-name={folder}
-      className='Note p-4 mb-3.5 rounded-lg max-h-48 shadow'
+      data-edit={id}
+      className='Note p-4 mb-3.5 rounded-lg max-h-48 shadow cursor-pointer'
       style={{
         backgroundColor: bgColor,
         color,
       }}
+      onClick={(e) => editNote(e.currentTarget)}
     >
       <h4 className='font-bold'>{title}</h4>
       <div
@@ -103,18 +109,14 @@ export default function Note(props) {
           {atTime}
         </span>
         <div className='options relative'>
-          <i onClick={(e) => toggleOptions(e.target)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
+          <i onClick={(e) => toggleOptions(e, e.target)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
           <ul className='noteControlsOptions absolute -right-4 -top-16 overflow-hidden transition-width backdrop-blur-md shadow-md rounded-md text-sm w-0 '>
-            <li data-edit={id} onClick={(e) => editNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
-              <i className='iconoir-edit'></i>
-              <span>edit</span>
-            </li>
             <li data-move={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
               <i className='iconoir-share-ios'></i>
               <span>move</span>
             </li>
-            <li data-delete={id} onClick={(e) => deleteNote(e.currentTarget)} className={"flex gap-x-1 items-center px-2  cursor-pointer " + (deleteSpin && "pointer-events-none")}>
-              <i className={deleteSpin ? "iconoir-refresh-double animate-spin cursor-no-drop" : "iconoir-trash"}></i>
+            <li data-delete={id} onClick={(e) => deleteNote(e, e.currentTarget)} className={"flex gap-x-1 items-center px-2  cursor-pointer " + (deleteSpin && "pointer-events-none")}>
+              <i className={deleteSpin ? "iconoir-refresh-double animate-spin" : "iconoir-trash"}></i>
               <span>delete</span>
             </li>
           </ul>

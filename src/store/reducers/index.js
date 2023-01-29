@@ -75,7 +75,7 @@ export const notesSlice = createSlice({
   },
   reducers: {
     pushNote: function (state, action) {
-      state.notes.push(action.payload);
+      state.notes.unshift(action.payload);
     },
     updateNote: function (state, action) {
       const specificNote = state.notes.find((note) => {
@@ -164,7 +164,7 @@ const foldersSlice = createSlice({
   },
   reducers: {
     pushFolder: function (state, action) {
-      state.folders.push(action.payload);
+      state.folders.unshift(action.payload);
     },
     removeFolder: function (state, action) {
       const updated = state.folders.filter((folder) => folder.id !== action.payload);
@@ -193,16 +193,16 @@ export const { pushFolder, removeFolder, reNameFolder } = foldersSlice.actions;
 export const foldersReducer = foldersSlice.reducer;
 
 const modifyFolderSlice = createSlice({
-  name: "modifyFolder",
+  name: "addFolder",
   initialState: false,
   reducers: {
-    switchModifyMode: (state, action) => {
+    switchAddMode: (state, action) => {
       return (state = action.payload);
     },
   },
 });
-export const { switchModifyMode } = modifyFolderSlice.actions;
-export const folderModifyMode = modifyFolderSlice.reducer;
+export const { switchAddMode } = modifyFolderSlice.actions;
+export const folderAddMode = modifyFolderSlice.reducer;
 
 const activatedSlice = createSlice({
   name: "activated",

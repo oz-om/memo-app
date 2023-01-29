@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import Folder from "./folder/Folder";
-import { switchModifyMode, updateActivated } from "../../store/reducers";
+import { switchAddMode, updateActivated } from "../../store/reducers";
 import { useEffect } from "react";
 import { getFoldersBlock, useActivatedFolder } from "../../global";
 
 export default function FoldersBlock() {
   //@ts-ignore
-  const { foldersReducer, folderModifyMode, activatedReducer, notesReducer } = useSelector((state) => state);
+  const { foldersReducer, folderAddMode, activatedReducer, notesReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   function activeFolder(item) {
     let folder = item.parentElement;
@@ -46,7 +46,7 @@ export default function FoldersBlock() {
     let itemsCount = notesReducer.notes.filter((note) => {
       return note.category_id == folder.id;
     });
-    return <Folder key={folder.id} folder_id={folder.id} name={folder.folder} itemsCount={itemsCount.length} modifyMode={false} method={activeFolder} />;
+    return <Folder key={folder.id} folder_id={folder.id} name={folder.folder} itemsCount={itemsCount.length} addMode={false} method={activeFolder} />;
   });
 
   return (
@@ -69,9 +69,9 @@ export default function FoldersBlock() {
             <h2 className='text-lg font-black px-2'>All</h2>
           </div>
         </div>
-        {folderModifyMode && (
+        {folderAddMode && (
           <Folder
-            modifyMode={folderModifyMode}
+            addMode={folderAddMode}
             method={(e) => {
               activeFolder(e.currentTarget);
             }}
@@ -79,7 +79,7 @@ export default function FoldersBlock() {
         )}
         {initFolders}
       </div>
-      <div onClick={() => dispatch(switchModifyMode(true))} className='createNewFolder absolute bottom-0 w-full cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center'>
+      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute bottom-0 w-full cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center'>
         <i className='iconoir-add-folder mx-auto text-2xl'></i>
         <span className='text-[11px] font-bold pl-3'>New Folder</span>
       </div>
