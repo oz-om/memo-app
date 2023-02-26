@@ -7,27 +7,32 @@ export function getCreateBlock() {
 
   document.querySelector(".mainBody > .container").classList.toggle("-left-[100vw]");
   document.querySelector(".mainBody > .container").classList.toggle("left-0");
-  //@ts-ignore
-  if (window.myEditor) {
-    //@ts-ignore
-    window.myEditor = undefined;
-  } else {
-    // @ts-ignore
-    let iframe = document.querySelector(".noteContent iframe");
-    //@ts-ignore
-    iframe.contentDocument.designMode = "on";
-    //@ts-ignore
-    iframe.contentDocument.body.style.margin = "0";
-    //@ts-ignore
-    iframe.contentDocument.body.style.padding = "8px";
-    //@ts-ignore
-    window.myEditor = iframe.contentDocument.body;
-  }
-}
 
+  let NoteEditor = document.querySelector(".createBlock .noteContent .note > div");
+  // @ts-ignore
+  placeCaretAtEnd(NoteEditor);
+}
+export function placeCaretAtEnd(NoteEditor) {
+  // NoteEditor.focus();
+  // if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+  //   var range = document.createRange();
+  //   range.selectNodeContents(NoteEditor);
+  //   range.collapse(false);
+  //   var sel = window.getSelection();
+  //   sel.removeAllRanges();
+  //   sel.addRange(range);
+  //   // @ts-ignore
+  // } else if (typeof document.body.createTextRange != "undefined") {
+  //   // @ts-ignore
+  //   var textRange = document.body.createTextRange();
+  //   textRange.moveToElementText(NoteEditor);
+  //   textRange.collapse(false);
+  //   textRange.select();
+  // }
+}
 // get folders block
 export function getFoldersBlock() {
-  document.querySelector(".foldersBlock").classList.toggle("-right-[100vw]");
+  document.querySelector(".foldersBlock").classList.toggle("right-[100vw]");
   document.querySelector(".foldersBlock").classList.toggle("right-0");
 }
 

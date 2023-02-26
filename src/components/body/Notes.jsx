@@ -45,8 +45,6 @@ function timestamp(atTime) {
   } else if (daysDifference === 1) {
     return `Yesterday at ${hours}:${minutes}`;
   } else if (currentTime.getFullYear() === year) {
-    console.log(currentTime.getFullYear(), year);
-
     return `${day} ${month}`;
   } else {
     return `${day} ${month} ${year}`;

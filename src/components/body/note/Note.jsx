@@ -71,6 +71,7 @@ export default function Note(props) {
       return note.id == edit.dataset.edit;
     });
     const { title, note, id, bgColor, color } = specificNote[0];
+
     dispatch(switchNoteModifyMode({ editMode: true, title, note, id, bgColor, color }));
     edit.parentElement.classList.toggle("w-0");
     edit.parentElement.classList.toggle("w-20");

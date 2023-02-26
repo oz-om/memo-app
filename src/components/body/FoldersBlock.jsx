@@ -50,7 +50,7 @@ export default function FoldersBlock() {
   });
 
   return (
-    <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right -right-[100vw]'>
+    <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right right-[100vw]'>
       <div className='bar py-1 mb-2 shadow-md relative'>
         <div className='basis-1/5 ml-2 text-xl cursor-pointer'>
           <i className='iconoir-reply' onClick={() => getFoldersBlock()}></i>

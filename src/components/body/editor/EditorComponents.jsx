@@ -1,7 +1,7 @@
-import { getCreateBlock } from "../../../global";
+import { getCreateBlock, placeCaretAtEnd } from "../../../global";
 
 function editor() {
-  return document.querySelector(".createBlock .noteContent iframe");
+  return document.querySelector(".ql-container.ql-snow .ql-editor");
 }
 
 //editor controls
@@ -17,31 +17,33 @@ function goBack() {
   setInputs("", "", "white", "");
 }
 function checkChanges(newChanges, defaultValue) {
-  let inputValue;
   let isChanged = false;
-  if (newChanges.length > 0) {
-    inputValue = newChanges;
+  if (newChanges !== defaultValue) {
     isChanged = true;
-  } else {
-    inputValue = defaultValue;
   }
   return {
-    inputValue,
     isChanged,
   };
 }
+// @ts-ignore
 function setInputs(title, note, bgColor, color) {
-  let noteTitle = document.querySelector(".noteContent .title input");
+  // @ts-ignore
+  let noteTitle = document.querySelector(".ql-container.ql-snow .noteTitle");
   let titleStyle = document.documentElement.style;
 
   //@ts-ignore
-  let editorDoc = document.querySelector(".createBlock .noteContent iframe").contentDocument;
-  // @ts-ignore
-  noteTitle.value = title;
+  let editorDoc = editor();
+
+  if (noteTitle) {
+    // @ts-ignore
+    noteTitle.value = title;
+  }
   if (editorDoc) {
-    editorDoc.body.innerHTML = note;
-    editorDoc.body.style.backgroundColor = bgColor;
-    editorDoc.body.style.color = color;
+    editorDoc.innerHTML = note;
+    // @ts-ignore
+    editorDoc.style.backgroundColor = bgColor;
+    // @ts-ignore
+    editorDoc.style.color = color;
   }
   titleStyle.setProperty("--editor-bgColor", bgColor);
   titleStyle.setProperty("--editor-color", color);
@@ -64,125 +66,6 @@ function toggleThemes(icon) {
       list.classList.remove("flex");
     }
   });
-}
-
-// Text control component
-let textActions = [
-  {
-    icon: "iconoir-align-left",
-    cmd: "justifyLeft",
-    group: "position",
-  },
-  {
-    icon: "iconoir-align-center",
-    cmd: "justifyCenter",
-    group: "position",
-  },
-  {
-    icon: "iconoir-align-right",
-    cmd: "justifyRight",
-    group: "position",
-  },
-  {
-    icon: "iconoir-italic",
-    cmd: "italic",
-    group: "noGroup",
-  },
-  {
-    icon: "iconoir-underline",
-    cmd: "underline",
-    group: "noGroup",
-  },
-  {
-    icon: "iconoir-bold",
-    cmd: "bold",
-    group: "noGroup",
-  },
-];
-function applyTextControlsEffect(target) {
-  // @ts-ignore
-  let editorDoc = editor().contentDocument;
-  let cmd = target.dataset.cmd;
-  let group = target.dataset.group;
-  if (group != "noGroup") {
-    document.querySelectorAll(`[data-group=${group}]`).forEach((ele) => {
-      ele.classList.remove("border-blue-400");
-    });
-    target.classList.add("border-blue-400");
-  } else {
-    target.classList.toggle("border-blue-400");
-  }
-  editorDoc.execCommand(cmd, false, null);
-}
-function TextControl(props) {
-  const { icon, cmd, group } = props;
-  return (
-    <i
-      onClick={(e) => {
-        applyTextControlsEffect(e.target);
-      }}
-      data-cmd={cmd}
-      data-group={group}
-      className={icon + " border rounded-md cursor-pointer"}
-    ></i>
-  );
-}
-
-// text Size Component
-let textSizeActions = [
-  {
-    icon: "https://svgshare.com/i/ou3.svg",
-    cmd: "fontSize",
-    type: "increment",
-    group: "textSize",
-  },
-  {
-    icon: "https://svgshare.com/i/osn.svg",
-    cmd: "fontSize",
-    type: "decrement",
-    group: "textSize",
-  },
-];
-let maxSize = 6,
-  minSize = 3,
-  textSize = minSize;
-function applyTextSizeEffect(target) {
-  //@ts-ignore
-  let editorDoc = editor().contentDocument,
-    cmd = target.dataset.cmd,
-    type = target.dataset.type,
-    group = target.dataset.group;
-  if (type == "increment") {
-    if (maxSize > textSize) {
-      textSize++;
-      editorDoc.execCommand(cmd, false, textSize);
-    }
-  } else {
-    if (minSize < textSize) {
-      textSize--;
-      editorDoc.execCommand(cmd, false, textSize);
-    }
-  }
-
-  document.querySelectorAll(`[data-group=${group}]`).forEach((ele) => {
-    ele.classList.remove("border-blue-400");
-  });
-  target.classList.add("border-blue-400");
-}
-function TextSize(props) {
-  const { icon, cmd, type, group } = props;
-  return (
-    <img
-      onClick={(e) => {
-        applyTextSizeEffect(e.target);
-      }}
-      src={icon}
-      className={"w-7 h-7 border rounded-md cursor-pointer"}
-      data-cmd={cmd}
-      data-type={type}
-      data-group={group}
-    />
-  );
 }
 
 // text fonts component
@@ -224,11 +107,12 @@ let textFontActions = [
 ];
 function applyFontEffect(target) {
   //@ts-ignore
-  let editorDoc = editor().contentDocument,
-    cmd = target.dataset.cmd,
+  let noteEditor = editor();
+  placeCaretAtEnd(noteEditor);
+  let cmd = target.dataset.cmd,
     value = target.dataset.value;
 
-  editorDoc.execCommand(cmd, false, value);
+  document.execCommand(cmd, false, value);
   document.querySelectorAll("[data-type=textFont]").forEach((ele) => {
     ele.classList.remove("border-orange-100");
   });
@@ -279,17 +163,17 @@ let editorThemeActions = [
     bgColor: "bg-pink-600",
   },
 ];
-function showThemes(target) {
+function showThemes() {
   document.querySelector(".themeColor .themeList").classList.toggle("hidden");
   document.querySelector(".themeColor .themeList").classList.toggle("flex");
-  toggleThemes(target);
 }
 function applyTheme(target) {
   //@ts-ignore
-  let editorDoc = editor().contentDocument;
+  let editorDoc = editor();
 
   let titleStyle = document.documentElement.style;
-  let noteStyle = editorDoc.body.style;
+  //@ts-ignore
+  let noteStyle = editorDoc.style;
 
   let textColor = getComputedStyle(target).backgroundColor;
   let bgColor = getComputedStyle(target).color;
@@ -299,27 +183,43 @@ function applyTheme(target) {
 
   noteStyle.setProperty("background-color", bgColor);
   noteStyle.setProperty("color", textColor);
+  showThemes();
 }
-function Theme(props) {
-  const { cmd, bgColor, textColor } = props;
-  return (
-    <li
-      onClick={(e) => {
-        applyTheme(e.target);
-      }}
-      data-cmd={cmd}
-      className={`h-6 w-10 rounded cursor-pointer ${bgColor} ${textColor}`}
-    ></li>
-  );
+function Theme(toolBar) {
+  let themeContainer = document.createElement("span");
+  themeContainer.className = "ql-formats themeColor relative grid place-content-center";
+  let themeIcon = document.createElement("i");
+  //@ts-ignore
+  themeIcon.classList = "iconoir-flower cursor-pointer pt-1.5";
+  themeIcon.onclick = (e) => showThemes();
+  let themeUL = document.createElement("ul");
+  //@ts-ignore
+  themeUL.classList = "themeList absolute flex-col gap-1 -right-3.5 bg-gray-200 p-1 rounded z-[1] hidden";
+
+  editorThemeActions.forEach((theme) => {
+    let themeItem = document.createElement("li");
+    themeItem.onclick = (e) => {
+      applyTheme(e.target);
+    };
+    themeItem.setAttribute("data-cmd", theme.cmd);
+    //@ts-ignore
+    themeItem.classList = `h-6 w-10 rounded cursor-pointer ${theme.bgColor} ${theme.textColor}`;
+    themeUL.append(themeItem);
+  });
+  themeContainer.append(themeIcon, themeUL);
+  toolBar.append(themeContainer);
+  // return (
+  //   <li
+  //     onClick={(e) => {
+  //       applyTheme(e.target);
+  //     }}
+  //     data-cmd={cmd}
+  //     className={`h-6 w-10 rounded cursor-pointer ${bgColor} ${textColor}`}
+  //   ></li>
+  // );
 }
 
 export {
-  // text controls
-  TextControl,
-  textActions,
-  //text size
-  TextSize,
-  textSizeActions,
   // text font
   showFonts,
   TextFont,

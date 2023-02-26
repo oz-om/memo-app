@@ -17,7 +17,7 @@ export default function Body() {
     }
   }, [userReducer.userState]);
   return (
-    <main className='mainBody pt-5 overflow-hidden relative'>
+    <main className='mainBody pt-5 overflow-hidden relative h-full'>
       {userReducer.userState && (
         <>
           <div className='container transition-left left-0 relative'>

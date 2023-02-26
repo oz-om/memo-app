@@ -32,7 +32,7 @@
   .createBlock .noteView {
     grid-template-columns: minmax(170px, 1fr) minmax(auto, 75px);
   }
-  .noteContent .title input {
+  .ql-container.ql-snow .noteTitle {
     background-color: var(--editor-bgColor);
     color: var(--editor-color);
   }
