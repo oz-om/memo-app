@@ -219,6 +219,22 @@ function Theme(toolBar) {
   // );
 }
 
+// upload photos
+function dataURItoBlob(dataURI) {
+  const byteString = atob(dataURI.split(",")[1]);
+  const mimeType = dataURI.split(",")[0].split(":")[1].split(";")[0];
+
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return {
+    blob: new Blob([ab], { type: mimeType }),
+    mimeType,
+  };
+}
+
 export {
   // text font
   showFonts,
@@ -233,4 +249,6 @@ export {
   setInputs,
   getFolder,
   goBack,
+  // upload
+  dataURItoBlob,
 };

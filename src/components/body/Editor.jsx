@@ -15,6 +15,7 @@ import {
   setInputs,
   getFolder,
   goBack,
+  dataURItoBlob,
 } from "./editor/EditorComponents";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -145,11 +146,6 @@ export default function CreateBlock() {
     setNote(noteModifyMode.note);
   }, [noteModifyMode.editMode]);
 
-  const modules = {
-    toolbar: {
-      container: [[{ header: [2, false] }], ["bold", "italic", "underline"], [{ align: "" }, { align: "center" }, { align: "right" }], [{ indent: "-1" }, { indent: "+1" }], [{ list: "ordered" }, { list: "bullet" }], ["image"]],
-    },
-  };
   function loadingEditor() {
     let editorContainer = document.querySelector(".ql-container.ql-snow");
 
@@ -172,6 +168,9 @@ export default function CreateBlock() {
         Theme(toolBar);
       }
       let noteContent = document.querySelector(".ql-container.ql-snow .ql-editor");
+
+      //@ts-ignore
+      window.noteEditor = noteContent;
       //@ts-ignore
       noteContent.oninput = function () {
         setNote(this.innerHTML);
@@ -179,6 +178,29 @@ export default function CreateBlock() {
       };
     }
   }
+
+  async function uploadGetNewUrl(image) {
+    const blob = dataURItoBlob(image.src);
+    const newFile = new File([blob.blob], `${new Date().getTime()}`, { type: blob.mimeType });
+    let formData = new FormData();
+    formData.append("file", newFile);
+
+    let req = await fetch(`${VITE_API_KEY}/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    let res = await req.json();
+    if (res.upload) {
+      return res.imgUrl;
+    }
+  }
+
+  const modules = {
+    toolbar: {
+      container: [[{ size: ["small", false, "large", "huge"] }], ["bold", "italic", "underline"], [{ align: "" }, { align: "center" }, { align: "right" }], [{ indent: "-1" }, { indent: "+1" }], [{ list: "ordered" }, { list: "bullet" }], ["image"]],
+    },
+  };
+
   return (
     <div className='createBlock absolute top-0 mt-1 w-full h-full bg-slate-100 -right-[100vw] transition-right'>
       <div className='container h-full'>
@@ -203,7 +225,31 @@ export default function CreateBlock() {
             </>
           )}
         </div>
-        <ReactQuill theme='snow' modules={modules} onLoad={loadingEditor()} className='h-[90%] bg-white' />
+        <ReactQuill
+          theme='snow'
+          modules={modules}
+          onLoad={loadingEditor()}
+          placeholder={"Write something awesome..."}
+          onChange={(content, action) => {
+            //@ts-ignore
+            let noteEditor = window.noteEditor;
+
+            let event = action.ops.length == 1 ? action.ops[0] : action.ops[1];
+
+            if (event.insert && event.insert.image != undefined) {
+              let images = noteEditor.querySelectorAll("img");
+              images.forEach(async (image, i) => {
+                if (image.getAttribute("data-item") == null) {
+                  image.setAttribute("data-item", i + 1);
+                  uploadGetNewUrl(image).then((url) => {
+                    image.src = url;
+                  });
+                }
+              });
+            }
+          }}
+          className='h-[90%] bg-white'
+        />
       </div>
     </div>
   );
