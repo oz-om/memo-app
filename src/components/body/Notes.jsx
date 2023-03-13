@@ -1,5 +1,6 @@
 import Note from "./note/Note";
-import Masonry from "react-responsive-masonry";
+// import Masonry from "react-responsive-masonry";
+import Masonry from "./note/Masonry";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setupNotes } from "../../store/reducers";
@@ -68,7 +69,7 @@ export default function Notes() {
     <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll  h-'>
       {notesReducer.loading ? (
         <>
-          <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
+          <Masonry columnsCount={2} gap={3}>
             <LoadNotes height={"h-48"} />
             <LoadNotes height={"h-[136px]"} />
             <LoadNotes height={"h-[136px]"} />
@@ -78,7 +79,7 @@ export default function Notes() {
           </Masonry>
         </>
       ) : virtualNotes.length > 0 ? (
-        <Masonry columnsCount={2} gutter={"16px"} style={{ paddingBottom: "50px" }}>
+        <Masonry columnsCount={2} gap={3}>
           {virtualNotes.map((n) => {
             const { id, title, note, folder, atTime, bgColor, color } = n;
             return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;

@@ -30,6 +30,7 @@ export default function CreateBlock() {
   const [note, setNote] = useState("");
   const [createSpin, setCreateSpin] = useState(false);
   const [saveSpin, setSaveSpin] = useState(false);
+  const [uploadSpin, setUploadSpin] = useState(false);
 
   let addRequestController;
   async function addNote() {
@@ -152,7 +153,7 @@ export default function CreateBlock() {
     let noteTitle = document.createElement("input");
     noteTitle.type = "text";
     noteTitle.placeholder = "title";
-    noteTitle.setAttribute("class", "noteTitle w-full outline-none font-black text-lg pl-2 font-mono");
+    noteTitle.setAttribute("class", "noteTitle w-full outline-none font-black text-lg pl-2 font-mono border border-[#cccccc] border-b-0");
     noteTitle.oninput = function () {
       //@ts-ignore
       setTitleNote(this.value);
@@ -161,25 +162,34 @@ export default function CreateBlock() {
     let toolBar = document.querySelector(".ql-toolbar.ql-snow");
     if (editorContainer) {
       //@ts-ignore
-      editorContainer.style.height = "90%";
+      editorContainer.style.cssText = `
+        height: 90%;
+        border: none;
+      `;
       if (editorContainer.childElementCount == 3) {
         editorContainer.prepend(noteTitle);
 
         Theme(toolBar);
       }
       let noteContent = document.querySelector(".ql-container.ql-snow .ql-editor");
-
+      noteContent.classList.add("customScroll", "bg-white");
+      //@ts-ignore
+      noteContent.style.height = "92%";
+      //@ts-ignore
+      noteContent.style.border = "1px solid #cccccc";
+      //@ts-ignore
+      noteContent.style.borderTop = "transparent";
       //@ts-ignore
       window.noteEditor = noteContent;
       //@ts-ignore
       noteContent.oninput = function () {
-        setNote(this.innerHTML);
         validStyle();
       };
     }
   }
 
   async function uploadGetNewUrl(image) {
+    setUploadSpin(true);
     const blob = dataURItoBlob(image.src);
     const newFile = new File([blob.blob], `${new Date().getTime()}`, { type: blob.mimeType });
     let formData = new FormData();
@@ -191,6 +201,7 @@ export default function CreateBlock() {
     });
     let res = await req.json();
     if (res.upload) {
+      setUploadSpin(false);
       return res.imgUrl;
     }
   }
@@ -204,7 +215,7 @@ export default function CreateBlock() {
   return (
     <div className='createBlock absolute top-0 mt-1 w-full h-full bg-slate-100 -right-[100vw] transition-right'>
       <div className='container h-full'>
-        <div className='noteControls flex justify-between items-center border-b border-b-gray-300 mb-2 px-3'>
+        <div className='noteControls relative flex justify-between items-center border-b border-b-gray-300 mb-2 px-3'>
           {noteModifyMode.editMode ? (
             <>
               <div className='cancelChanges'>
@@ -216,13 +227,19 @@ export default function CreateBlock() {
             </>
           ) : (
             <>
-              <div>
+              <div className='back'>
                 <i className='iconoir-arrow-left font-black text-3xl cursor-pointer' onClick={() => goBack()}></i>
               </div>
               <div onClick={() => addNote()} className={"text-green-500 bg-green-100 border border-green-300 text-2xl rounded-md py-[2px] px-2 " + (createSpin ? "pointer-events-none" : "cursor-pointer ")}>
                 <i className={"px-1 h-6 grid place-content-center" + (createSpin ? " iconoir-refresh-double animate-spin" : " iconoir-send")}></i>
               </div>
             </>
+          )}
+          {uploadSpin && (
+            <div className='uploadPending absolute flex gap-x-2 justify-center items-center w-max mt-5 text-gray-400 text-sm left-2/4 right-2/4 -translate-y-1/2 -translate-x-1/2'>
+              <i className='iconoir-refresh animate-spin'></i>
+              <p>upload image...</p>
+            </div>
           )}
         </div>
         <ReactQuill
@@ -247,8 +264,9 @@ export default function CreateBlock() {
                 }
               });
             }
+            setNote(content);
           }}
-          className='h-[90%] bg-white'
+          className='h-[90%]'
         />
       </div>
     </div>

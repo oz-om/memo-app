@@ -36,8 +36,8 @@
     background-color: var(--editor-bgColor);
     color: var(--editor-color);
   }
-  .noteContent .note iframe {
-    height: calc(100vh - 154px);
+  .ql-editor img {
+    @apply border rounded-md;
   }
   /*animation*/
   .loading {

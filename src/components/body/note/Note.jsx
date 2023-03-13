@@ -78,16 +78,44 @@ export default function Note(props) {
   }
 
   const { id, title, note, atTime, folder, bgColor, color } = props;
+  let image = {
+    include: false,
+    src: "",
+  };
+  let line_clamp = "line-clamp-5";
+
   function changeColorOpacity(opacity) {
     let newColor = color.split(")");
     newColor[1] = opacity;
     return newColor.join();
   }
+
+  // check if the note content includes images then change line-clamp
+  const parser = new DOMParser();
+  const htmlDoc = parser.parseFromString(note, "text/html");
+  const images = htmlDoc.getElementsByTagName("img");
+  if (images.length > 0) {
+    line_clamp = "line-clamp-3";
+    image.include = true;
+    image.src = images[0].src;
+  }
+
+  // customize note text
+  const paragraphs = htmlDoc.getElementsByTagName("p");
+  const filteredParagraphs = Array.from(paragraphs).filter((p) => !p.querySelector("img"));
+  let shortNote = "";
+  for (let i = 0; i < 4; i++) {
+    if (!filteredParagraphs[i]) {
+      break;
+    }
+    shortNote += filteredParagraphs[i].innerHTML;
+  }
+
   return (
     <div
       data-name={folder}
       data-edit={id}
-      className='Note p-4 pb-0 mb-3.5 rounded-lg max-h-48 shadow cursor-pointer'
+      className={"Note p-4 mb-3.5 rounded-lg shadow cursor-pointer " /*+ (image.include && "h-72")*/}
       style={{
         backgroundColor: bgColor,
         color,
@@ -95,9 +123,10 @@ export default function Note(props) {
       onClick={(e) => editNote(e.currentTarget)}
     >
       <h4 className='font-bold'>{title}</h4>
+      {image.include && <img src={image.src} className='max-w-40 max-h-36 rounded'></img>}
       <div
-        dangerouslySetInnerHTML={{ __html: note }}
-        className='shortNote line-clamp-5 whitespace-pre-line'
+        dangerouslySetInnerHTML={{ __html: shortNote }}
+        className={"shortNote whitespace-pre-line " + line_clamp}
         style={{
           color: changeColorOpacity(" 0.65)"),
         }}
