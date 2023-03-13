@@ -12,6 +12,7 @@ module.exports = {
       },
       transitionProperty: {
         width: "width",
+        height: "height",
         left: "left",
         right: "right",
       },

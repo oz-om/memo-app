@@ -6,18 +6,30 @@ import { getCreateBlock, useToggleSearchUI } from "../../../global";
 import { useState } from "react";
 const { VITE_API_KEY } = process.env;
 
-function toggleOptions(e, target) {
+function toggleOptions(e, show, hide) {
   e.stopPropagation();
   let options = document.querySelectorAll(".Note .options .noteControlsOptions");
-  options.forEach((list) => {
-    if (target.nextElementSibling == list) {
-      target.nextElementSibling.classList.toggle("w-0");
-      target.nextElementSibling.classList.toggle("w-20");
-    } else {
-      list.classList.add("w-0");
-      list.classList.remove("w-20");
-    }
-  });
+  if (show) {
+    options.forEach((list) => {
+      if (show.nextElementSibling == list) {
+        show.nextElementSibling.classList.toggle("h-0");
+        show.nextElementSibling.classList.toggle("h-11");
+      } else {
+        list.classList.add("h-0");
+        list.classList.remove("h-11");
+      }
+    });
+  } else {
+    options.forEach((list) => {
+      if (hide.parentElement == list) {
+        hide.parentElement.classList.toggle("h-0");
+        hide.parentElement.classList.toggle("h-11");
+      } else {
+        list.classList.add("h-0");
+        list.classList.remove("h-11");
+      }
+    });
+  }
 }
 
 export default function Note(props) {
@@ -115,7 +127,7 @@ export default function Note(props) {
     <div
       data-name={folder}
       data-edit={id}
-      className={"Note p-4 mb-3.5 rounded-lg shadow cursor-pointer " /*+ (image.include && "h-72")*/}
+      className={"Note p-4 mb-3.5 rounded-lg shadow cursor-pointer relative" /*+ (image.include && "h-72")*/}
       style={{
         backgroundColor: bgColor,
         color,
@@ -140,17 +152,20 @@ export default function Note(props) {
         >
           {atTime}
         </span>
-        <div className='options relative'>
-          <i onClick={(e) => toggleOptions(e, e.target)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
-          <ul className='noteControlsOptions absolute -right-4 -top-16 overflow-hidden transition-width backdrop-blur-md shadow-md rounded-md text-sm w-0 '>
-            <li data-move={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
-              <i className='iconoir-share-ios'></i>
-              <span>move</span>
-            </li>
-            <li data-delete={id} onClick={(e) => deleteNote(e, e.currentTarget)} className={"flex gap-x-1 items-center px-2  cursor-pointer " + (deleteSpin && "pointer-events-none")}>
-              <i className={deleteSpin ? "iconoir-refresh-double animate-spin" : "iconoir-trash"}></i>
-              <span>delete</span>
-            </li>
+        <div className='options'>
+          <i onClick={(e) => toggleOptions(e, e.target, null)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
+          <ul className='noteControlsOptions flex justify-between absolute right-0 bottom-0 overflow-hidden transition-height backdrop-blur-md shadow-md rounded-md text-sm w-full border h-0 '>
+            <div className='flex flex-wrap'>
+              <li data-move={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
+                <i className='iconoir-share-ios'></i>
+                <span>move</span>
+              </li>
+              <li data-delete={id} onClick={(e) => deleteNote(e, e.currentTarget)} className={"flex gap-x-1 items-center px-2  cursor-pointer " + (deleteSpin && "pointer-events-none")}>
+                <i className={deleteSpin ? "iconoir-refresh-double animate-spin" : "iconoir-trash"}></i>
+                <span>delete</span>
+              </li>
+            </div>
+            <i className='iconoir-nav-arrow-down grid place-content-center px-3 cursor-pointer' onClick={(e) => toggleOptions(e, null, e.target)}></i>
           </ul>
         </div>
       </div>
