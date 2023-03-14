@@ -174,14 +174,6 @@ export default function CreateBlock() {
       let noteContent = document.querySelector(".ql-container.ql-snow .ql-editor");
       noteContent.classList.add("customScroll", "bg-white");
       //@ts-ignore
-      noteContent.style.height = "92%";
-      //@ts-ignore
-      noteContent.style.border = "1px solid #cccccc";
-      //@ts-ignore
-      noteContent.style.borderTop = "transparent";
-      //@ts-ignore
-      window.noteEditor = noteContent;
-      //@ts-ignore
       noteContent.oninput = function () {
         validStyle();
       };
@@ -213,7 +205,7 @@ export default function CreateBlock() {
   };
 
   return (
-    <div className='createBlock absolute top-0 mt-1 w-full h-full bg-slate-100 -right-[100vw] transition-right'>
+    <div className='createBlock absolute top-0 w-full overflow-y-auto bg-slate-100 -right-[100vw] transition-right'>
       <div className='container h-full'>
         <div className='noteControls relative flex justify-between items-center border-b border-b-gray-300 mb-2 px-3'>
           {noteModifyMode.editMode ? (

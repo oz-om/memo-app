@@ -79,7 +79,7 @@ export default function FoldersBlock() {
         )}
         {initFolders}
       </div>
-      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute bottom-0 w-full cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center'>
+      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute bottom-4 w-full h-11 cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center'>
         <i className='iconoir-add-folder mx-auto text-2xl'></i>
         <span className='text-[11px] font-bold pl-3'>New Folder</span>
       </div>

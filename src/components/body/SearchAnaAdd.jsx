@@ -38,7 +38,7 @@ export default function SearchAndAdd() {
   }
 
   return (
-    <div className='flex gap-x-5 items-center px-2 mt-5'>
+    <div className='flex gap-x-5 items-center px-2'>
       <div className='search shadow flex items-center w-4/5 mx-auto rounded-xl overflow-hidden relative'>
         <i className='iconoir-search absolute p-2 text-xl font-black'></i>
         <input onInput={(e) => search(e.target)} onFocus={(e) => toggleSearchMode(true)} type='text' placeholder='search notes' className='pl-8 w-full py-2 border-none outline-none' />

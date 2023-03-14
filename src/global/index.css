@@ -12,7 +12,7 @@
     @apply overflow-hidden;
   }
   body {
-    @apply font-mono;
+    @apply font-mono h-screen overflow-scroll;
   }
   img {
     @apply w-full h-full object-cover;
@@ -23,8 +23,11 @@
   .customScroll::-webkit-scrollbar {
     height: 4px;
   }
-  .mainBody {
-    height: calc(100vh - 52px);
+  .notesBlock,
+  .createBlock,
+  .foldersBlock {
+    margin-top: 20px;
+    height: calc(100vh - 77px);
   }
   .notes {
     height: calc(100vh - 155px);
@@ -35,6 +38,12 @@
   .ql-container.ql-snow .noteTitle {
     background-color: var(--editor-bgColor);
     color: var(--editor-color);
+  }
+  .ql-editor {
+    padding-bottom: 50px !important;
+    height: 92% !important;
+    border: 1px solid #cccccc;
+    border-top: transparent;
   }
   .ql-editor img {
     @apply border rounded-md;
