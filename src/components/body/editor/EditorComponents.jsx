@@ -140,25 +140,35 @@ function TextFont(props) {
   );
 }
 
-// text theme component
+// text theme component and editor
 let editorThemeActions = [
   {
     cmd: "foreColor",
+    bg: "https://totalwallcovering.com/images/product/modern-honeycomb-siye-l.jpg",
+    textColor: "text-white",
+    bgColor: "bg-black",
+  },
+  {
+    cmd: "foreColor",
+    bg: "https://wallpapercave.com/uwp/uwp3463036.png",
     textColor: "text-red-50",
     bgColor: "bg-red-600",
   },
   {
     cmd: "foreColor",
+    bg: "https://wallpapercave.com/uwp/uwp3463035.png",
     textColor: "text-green-50",
     bgColor: "bg-green-600",
   },
   {
     cmd: "foreColor",
+    bg: "https://wallpapercave.com/uwp/uwp3463034.png",
     textColor: "text-blue-50",
     bgColor: "bg-blue-600",
   },
   {
     cmd: "foreColor",
+    bg: "https://wallpapercave.com/uwp/uwp3463037.png",
     textColor: "text-pink-50",
     bgColor: "bg-pink-600",
   },
@@ -167,6 +177,7 @@ function showThemes() {
   document.querySelector(".themeColor .themeList").classList.toggle("hidden");
   document.querySelector(".themeColor .themeList").classList.toggle("flex");
 }
+
 function applyTheme(target) {
   //@ts-ignore
   let editorDoc = editor();
@@ -185,6 +196,7 @@ function applyTheme(target) {
   noteStyle.setProperty("color", textColor);
   showThemes();
 }
+
 function Theme(toolBar) {
   let themeContainer = document.createElement("span");
   themeContainer.className = "ql-formats themeColor relative grid place-content-center";
@@ -202,21 +214,13 @@ function Theme(toolBar) {
       applyTheme(e.target);
     };
     themeItem.setAttribute("data-cmd", theme.cmd);
+    themeItem.setAttribute("style", `background-image: url("${theme.bg}");`);
     //@ts-ignore
-    themeItem.classList = `h-6 w-10 rounded cursor-pointer ${theme.bgColor} ${theme.textColor}`;
+    themeItem.classList = `h-10 w-10 rounded cursor-pointer ${theme.bgColor} ${theme.textColor} bg-cover bg-center`;
     themeUL.append(themeItem);
   });
   themeContainer.append(themeIcon, themeUL);
   toolBar.append(themeContainer);
-  // return (
-  //   <li
-  //     onClick={(e) => {
-  //       applyTheme(e.target);
-  //     }}
-  //     data-cmd={cmd}
-  //     className={`h-6 w-10 rounded cursor-pointer ${bgColor} ${textColor}`}
-  //   ></li>
-  // );
 }
 
 // upload photos

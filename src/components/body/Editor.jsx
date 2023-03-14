@@ -150,6 +150,7 @@ export default function CreateBlock() {
   function loadingEditor() {
     let editorContainer = document.querySelector(".ql-container.ql-snow");
 
+    // add title for note
     let noteTitle = document.createElement("input");
     noteTitle.type = "text";
     noteTitle.placeholder = "title";
@@ -159,6 +160,7 @@ export default function CreateBlock() {
       setTitleNote(this.value);
       validStyle();
     };
+    // editing tool bar
     let toolBar = document.querySelector(".ql-toolbar.ql-snow");
     if (editorContainer) {
       //@ts-ignore
@@ -168,7 +170,6 @@ export default function CreateBlock() {
       `;
       if (editorContainer.childElementCount == 3) {
         editorContainer.prepend(noteTitle);
-
         Theme(toolBar);
       }
       let noteContent = document.querySelector(".ql-container.ql-snow .ql-editor");
@@ -246,15 +247,17 @@ export default function CreateBlock() {
             let event = action.ops.length == 1 ? action.ops[0] : action.ops[1];
 
             if (event.insert && event.insert.image != undefined) {
-              let images = noteEditor.querySelectorAll("img");
-              images.forEach(async (image, i) => {
-                if (image.getAttribute("data-item") == null) {
-                  image.setAttribute("data-item", i + 1);
-                  uploadGetNewUrl(image).then((url) => {
-                    image.src = url;
-                  });
-                }
-              });
+              if (noteEditor) {
+                let images = noteEditor.querySelectorAll("img");
+                images.forEach(async (image, i) => {
+                  if (image.getAttribute("data-item") == null) {
+                    image.setAttribute("data-item", i + 1);
+                    uploadGetNewUrl(image).then((url) => {
+                      image.src = url;
+                    });
+                  }
+                });
+              }
             }
             setNote(content);
           }}
