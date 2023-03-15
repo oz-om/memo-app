@@ -1,4 +1,6 @@
+import axios from "axios";
 import { setupNotes } from "../store/reducers";
+const { VITE_API_KEY } = process.env;
 
 // initials create block, to create new note
 export function getCreateBlock() {
@@ -10,26 +12,8 @@ export function getCreateBlock() {
 
   let NoteEditor = document.querySelector(".createBlock .noteContent .note > div");
   // @ts-ignore
-  placeCaretAtEnd(NoteEditor);
 }
-export function placeCaretAtEnd(NoteEditor) {
-  // NoteEditor.focus();
-  // if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-  //   var range = document.createRange();
-  //   range.selectNodeContents(NoteEditor);
-  //   range.collapse(false);
-  //   var sel = window.getSelection();
-  //   sel.removeAllRanges();
-  //   sel.addRange(range);
-  //   // @ts-ignore
-  // } else if (typeof document.body.createTextRange != "undefined") {
-  //   // @ts-ignore
-  //   var textRange = document.body.createTextRange();
-  //   textRange.moveToElementText(NoteEditor);
-  //   textRange.collapse(false);
-  //   textRange.select();
-  // }
-}
+
 // get folders block
 export function getFoldersBlock() {
   document.querySelector(".foldersBlock").classList.toggle("right-[100vw]");
@@ -84,6 +68,12 @@ export function useToggleSearchUI(searchMode, activatedReducer, dispatch, notes)
   return toggleUI;
 }
 
+// logout
+export async function logoutACtion() {
+  const req = await axios.get(`${VITE_API_KEY}/logout`, { withCredentials: true });
+  const res = await req.data;
+  return res;
+}
 // simulate slow connection
 export function wait(time) {
   return new Promise((resolve) => {

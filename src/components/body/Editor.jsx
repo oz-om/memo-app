@@ -206,7 +206,7 @@ export default function CreateBlock() {
   };
 
   return (
-    <div className='createBlock absolute top-0 w-full overflow-y-auto bg-slate-100 -right-[100vw] transition-right'>
+    <div className='createBlock absolute top-0 w-full overflow-y-auto bg-slate-100 -right-[100vw] transition-right md:h-full lg:w-4/6 lg:h-full'>
       <div className='container h-full'>
         <div className='noteControls relative flex justify-between items-center border-b border-b-gray-300 mb-2 px-3'>
           {noteModifyMode.editMode ? (

@@ -48,7 +48,7 @@ export default function Bar() {
   }, [activatedReducer]);
 
   return (
-    <div className='bar p-1 my-3 grid grid-cols-two shadow'>
+    <div className='bar p-1 my-3 grid grid-cols-two shadow lg:hidden'>
       <ul className='flex gap-x-2'>
         <li className='all rounded px-4 py-2 cursor-pointer border border-transparent active' data-id={0} onClick={active_toggle}>
           All

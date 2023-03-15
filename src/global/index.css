@@ -12,7 +12,8 @@
     @apply overflow-hidden;
   }
   body {
-    @apply font-mono h-screen overflow-scroll;
+    @apply font-mono h-screen overflow-scroll relative mx-auto;
+    max-width: 1464px;
   }
   img {
     @apply w-full h-full object-cover;
@@ -136,6 +137,33 @@
     70% {
       transform: none;
     }
+  }
+
+  /* responsiv */
+  .headInMd {
+    @apply md:p-0 md:overflow-hidden md:h-0 !important;
+  }
+  .mainBodyInMd {
+    width: calc(100% - 180px);
+    left: 155px;
+  }
+  .notesInMd {
+    height: calc(100vh - 133px);
+  }
+  .notesInLg {
+    height: calc(100vh - 73px);
+  }
+  .notesBlockInLg {
+    width: 67%;
+    left: 16%;
+  }
+  .overlayInLg {
+    width: 62%;
+    left: 38%;
+  }
+  .foldersBlockInLg {
+    @apply left-0 mt-0 pt-6;
+    width: 30%;
   }
 }
 

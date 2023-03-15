@@ -50,9 +50,9 @@ export default function FoldersBlock() {
   });
 
   return (
-    <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right right-[100vw]'>
+    <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right right-[100vw] lg:foldersBlockInLg'>
       <div className='bar py-1 mb-2 shadow-md relative'>
-        <div className='basis-1/5 ml-2 text-xl cursor-pointer'>
+        <div className='basis-1/5 ml-2 text-xl cursor-pointer lg:invisible'>
           <i className='iconoir-reply' onClick={() => getFoldersBlock()}></i>
         </div>
         <h2 className='basis-10/12 text-center font-bold absolute  w-40 translate-x-[50%] right-[50%] top-0'>folders</h2>
@@ -79,7 +79,7 @@ export default function FoldersBlock() {
         )}
         {initFolders}
       </div>
-      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute bottom-4 w-full h-11 cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center'>
+      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute w-full h-11 cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center rounded-md bottom-0 md:bottom-6 lg:bottom-1'>
         <i className='iconoir-add-folder mx-auto text-2xl'></i>
         <span className='text-[11px] font-bold pl-3'>New Folder</span>
       </div>

@@ -16,7 +16,7 @@ export default function Head() {
     <>
       <header>
         <div className='container'>
-          <div className='flex justify-between items-center px-2 py-2 shadow shadow-cyan-500/50 rounded-lg'>
+          <div className='flex justify-between items-center px-2 py-2 shadow shadow-cyan-500/50 rounded-lg headInMd'>
             <Menu />
             <Logo />
             <Suspense fallback={<LoadHeader />}>{userReducer.userState ? <User /> : <Guest />}</Suspense>

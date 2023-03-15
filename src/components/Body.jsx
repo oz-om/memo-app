@@ -17,10 +17,10 @@ export default function Body() {
     }
   }, [userReducer.userState]);
   return (
-    <main className='mainBody overflow-hidden relative h-full'>
+    <main className='mainBody overflow-hidden relative h-full md:h-screen md:mainBodyInMd'>
       {userReducer.userState && (
         <>
-          <div className='notesBlock container transition-left left-0 relative'>
+          <div className='notesBlock container transition-left left-0 relative lg:notesBlockInLg'>
             <SearchAndAdd />
             <Bar />
             <Notes />

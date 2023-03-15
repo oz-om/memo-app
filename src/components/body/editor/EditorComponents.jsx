@@ -1,4 +1,4 @@
-import { getCreateBlock, placeCaretAtEnd } from "../../../global";
+import { getCreateBlock } from "../../../global";
 
 function editor() {
   return document.querySelector(".ql-container.ql-snow .ql-editor");
@@ -108,7 +108,6 @@ let textFontActions = [
 function applyFontEffect(target) {
   //@ts-ignore
   let noteEditor = editor();
-  placeCaretAtEnd(noteEditor);
   let cmd = target.dataset.cmd,
     value = target.dataset.value;
 

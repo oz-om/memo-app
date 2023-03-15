@@ -25,10 +25,6 @@ function EmptyBlock() {
   );
 }
 function timestamp(atTime) {
-  // const Hours = new Date(atTime).getHours() < 10 ? `0${new Date(atTime).getHours()}` : new Date(atTime).getHours();
-  // const Minutes = new Date(atTime).getMinutes() < 10 ? `0${new Date(atTime).getMinutes()}` : new Date(atTime).getMinutes();
-  // const timestamp = `${Hours}:${Minutes}`;
-
   const givenTime = new Date(atTime);
   const currentTime = new Date();
   //@ts-ignore
@@ -66,7 +62,7 @@ export default function Notes() {
   }, [notesReducer.notes]);
 
   return (
-    <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll  h-'>
+    <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll  md:notesInMd lg:notesInLg'>
       {notesReducer.loading ? (
         <>
           <Masonry columnsCount={2} gap={3}>
