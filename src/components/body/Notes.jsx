@@ -77,8 +77,8 @@ export default function Notes() {
       ) : virtualNotes.length > 0 ? (
         <Masonry columnsCount={2} gap={3}>
           {virtualNotes.map((n) => {
-            const { id, title, note, folder, atTime, bgColor, color } = n;
-            return <Note key={id} id={id} title={title} note={note} folder={folder} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
+            const { id, title, note, folder, atTime, bgColor, color, category_id } = n;
+            return <Note key={id} id={id} title={title} note={note} folder={folder} folderId={category_id} atTime={timestamp(atTime)} bgColor={bgColor} color={color} />;
           })}
         </Masonry>
       ) : notesReducer.errMsg.length > 0 ? (

@@ -91,6 +91,12 @@ export const notesSlice = createSlice({
       const updated = state.notes.filter((note) => note.id !== action.payload);
       state.notes = updated;
     },
+    moveNote: function (state, action) {
+      const specificNote = state.notes.find((note) => {
+        return note.id == action.payload.noteId;
+      });
+      specificNote.category_id = action.payload.category;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchNotes.fulfilled, function (state, action) {
@@ -103,7 +109,7 @@ export const notesSlice = createSlice({
     });
   },
 });
-export const { pushNote, removeNote, updateNote } = notesSlice.actions;
+export const { pushNote, removeNote, updateNote, moveNote } = notesSlice.actions;
 export const notesReducer = notesSlice.reducer;
 
 export const virtualNotesSlice = createSlice({
@@ -117,6 +123,23 @@ export const virtualNotesSlice = createSlice({
 });
 export const { setupNotes } = virtualNotesSlice.actions;
 export const virtualNotes = virtualNotesSlice.reducer;
+
+// move mode
+const moveNoteSlice = createSlice({
+  name: "moveNote",
+  initialState: {
+    moveMode: false,
+    noteId: "",
+  },
+  reducers: {
+    switchMoveMode: function name(state, action) {
+      state.moveMode = action.payload.moveMode;
+      state.noteId = action.payload.noteId;
+    },
+  },
+});
+export const { switchMoveMode } = moveNoteSlice.actions;
+export const moveMode = moveNoteSlice.reducer;
 
 // modify mode
 const modifyNoteSlice = createSlice({

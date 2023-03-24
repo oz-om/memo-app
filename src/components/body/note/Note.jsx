@@ -1,41 +1,38 @@
 import axios from "axios";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeNote, switchNoteModifyMode, switchSearchMode } from "../../../store/reducers";
-import { getCreateBlock, useToggleSearchUI } from "../../../global";
+import { removeNote, switchMoveMode, switchNoteModifyMode, switchSearchMode } from "../../../store/reducers";
+import { getCreateBlock, getFoldersBlock, useToggleSearchUI } from "../../../global";
 import { useState } from "react";
 const { VITE_API_KEY } = process.env;
 
-function toggleOptions(e, show, hide) {
+function toggleOptions(e, show, hide, move) {
   e.stopPropagation();
   let options = document.querySelectorAll(".Note .options .noteControlsOptions");
+  let currentOptions;
+  // set the current options that will be toggled
   if (show) {
-    options.forEach((list) => {
-      if (show.nextElementSibling == list) {
-        show.nextElementSibling.classList.toggle("h-0");
-        show.nextElementSibling.classList.toggle("h-11");
-      } else {
-        list.classList.add("h-0");
-        list.classList.remove("h-11");
-      }
-    });
+    currentOptions = show.nextElementSibling;
+  } else if (hide) {
+    currentOptions = hide.parentElement;
   } else {
-    options.forEach((list) => {
-      if (hide.parentElement == list) {
-        hide.parentElement.classList.toggle("h-0");
-        hide.parentElement.classList.toggle("h-11");
-      } else {
-        list.classList.add("h-0");
-        list.classList.remove("h-11");
-      }
-    });
+    currentOptions = move;
   }
+  options.forEach((list) => {
+    if (currentOptions == list) {
+      currentOptions.classList.toggle("h-0");
+      currentOptions.classList.toggle("h-11");
+    } else {
+      list.classList.add("h-0");
+      list.classList.remove("h-11");
+    }
+  });
 }
 
-export default function Note(props) {
+export default function Note({ id, title, note, atTime, folder, bgColor, color, folderId }) {
   const [deleteSpin, setDeleteSpin] = useState(false);
   //@ts-ignore
-  const { notesReducer, activatedReducer, searchMode } = useSelector((state) => state);
+  const { notesReducer, activatedReducer, searchMode, moveMode } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   let deleteNoteRequestController;
@@ -72,6 +69,13 @@ export default function Note(props) {
     }
   }
 
+  function moveNote(e) {
+    let currentOptions = e.target.parentElement.parentElement.parentElement;
+    toggleOptions(e, null, null, currentOptions);
+    dispatch(switchMoveMode({ moveMode: true, noteId: id }));
+    getFoldersBlock();
+  }
+
   function editNote(edit) {
     if (searchMode) {
       dispatch(switchSearchMode(false));
@@ -89,7 +93,6 @@ export default function Note(props) {
     edit.parentElement.classList.toggle("w-20");
   }
 
-  const { id, title, note, atTime, folder, bgColor, color } = props;
   let image = {
     include: false,
     src: "",
@@ -153,10 +156,10 @@ export default function Note(props) {
           {atTime}
         </span>
         <div className='options'>
-          <i onClick={(e) => toggleOptions(e, e.target, null)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
+          <i onClick={(e) => toggleOptions(e, e.target, null, null)} className='iconoir-more-vert cursor-pointer font-black text-xl rounded'></i>
           <ul className='noteControlsOptions flex justify-between absolute right-0 bottom-0 overflow-hidden transition-height backdrop-blur-md shadow-md rounded-md text-sm w-full border h-0 '>
             <div className='flex flex-wrap'>
-              <li data-move={id} onClick={(e) => deleteNote(e.currentTarget)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
+              <li data-move={id} onClick={(e) => moveNote(e)} className='flex gap-x-1 items-center px-2  cursor-pointer'>
                 <i className='iconoir-share-ios'></i>
                 <span>move</span>
               </li>
@@ -165,7 +168,7 @@ export default function Note(props) {
                 <span>delete</span>
               </li>
             </div>
-            <i className='iconoir-nav-arrow-down grid place-content-center px-3 cursor-pointer' onClick={(e) => toggleOptions(e, null, e.target)}></i>
+            <i className='iconoir-nav-arrow-down grid place-content-center px-3 cursor-pointer' onClick={(e) => toggleOptions(e, null, e.target, null)}></i>
           </ul>
         </div>
       </div>

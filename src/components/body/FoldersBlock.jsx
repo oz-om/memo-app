@@ -1,15 +1,23 @@
 import { useSelector, useDispatch } from "react-redux";
 import Folder from "./folder/Folder";
-import { switchAddMode, updateActivated } from "../../store/reducers";
+import { switchAddMode, switchMoveMode, updateActivated, moveNote } from "../../store/reducers";
 import { useEffect } from "react";
 import { getFoldersBlock, useActivatedFolder } from "../../global";
+import axios from "axios";
+const { VITE_API_KEY } = process.env;
 
 export default function FoldersBlock() {
   //@ts-ignore
-  const { foldersReducer, folderAddMode, activatedReducer, notesReducer } = useSelector((state) => state);
+  const { foldersReducer, folderAddMode, activatedReducer, notesReducer, moveMode } = useSelector((state) => state);
   const dispatch = useDispatch();
-  function activeFolder(item) {
+
+  async function activeFolder(item) {
     let folder = item.parentElement;
+    //check if we in moe mode
+    if (moveMode.moveMode) {
+      await changeNoteCategory(folder.dataset.id);
+      return;
+    }
 
     const AllFolders = document.querySelectorAll(".foldersContainer .folder");
 
@@ -25,6 +33,7 @@ export default function FoldersBlock() {
     let filterNotes = useActivatedFolder(folder.dataset.id, dispatch, notesReducer.notes);
     filterNotes();
   }
+
   function autoActiveFolder() {
     let allFolders = Array.from(document.querySelectorAll(".foldersContainer .folder"));
     allFolders.forEach((folder) => {
@@ -36,6 +45,35 @@ export default function FoldersBlock() {
       }
     });
   }
+
+  function goBack() {
+    dispatch(switchMoveMode({ moveMode: false }));
+    getFoldersBlock();
+  }
+
+  async function changeNoteCategory(to) {
+    let data = {
+      noteId: moveMode.noteId,
+      to,
+    };
+    let options = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    };
+    const req = await axios.post(`${VITE_API_KEY}/change-category`, data, options);
+    const res = await req.data;
+    if (res.isChange) {
+      dispatch(moveNote({ category: to, noteId: moveMode.noteId }));
+      dispatch(updateActivated(to));
+      dispatch(switchMoveMode({ moveMode: false }));
+      getFoldersBlock();
+    } else {
+      console.log(res.msg);
+    }
+  }
+
   useEffect(() => {
     if (foldersReducer.folders.length > 0) {
       autoActiveFolder();
@@ -53,22 +91,25 @@ export default function FoldersBlock() {
     <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right right-[100vw] lg:foldersBlockInLg'>
       <div className='bar py-1 mb-2 shadow-md relative'>
         <div className='basis-1/5 ml-2 text-xl cursor-pointer lg:invisible'>
-          <i className='iconoir-reply' onClick={() => getFoldersBlock()}></i>
+          <i className='iconoir-reply' onClick={() => goBack()}></i>
         </div>
-        <h2 className='basis-10/12 text-center font-bold absolute  w-40 translate-x-[50%] right-[50%] top-0'>folders</h2>
+        <h2 className='basis-10/12 text-center font-bold absolute  w-40 translate-x-[50%] right-[50%] top-0'> {moveMode.moveMode ? "select folder" : "folders"}</h2>
       </div>
       <div style={{ height: "calc(100vh - 163px)" }} className='foldersContainer overflow-y-scroll scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-100/25 scrollbar-thumb-rounded-md scrollbar-track-rounded-sm'>
-        <div data-name='All' data-id={0} className='folder  bg-gray-100 border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent activatedFolder'>
-          <div
-            onClick={(e) => {
-              activeFolder(e.currentTarget);
-            }}
-            className='info flex items-center gap-x-1 px-2 py-2'
-          >
-            <span className='text-[12px]'>{notesReducer.notes.length}</span>
-            <h2 className='text-lg font-black px-2'>All</h2>
+        {!moveMode.moveMode && (
+          <div data-name='All' data-id={0} className='folder  bg-gray-100 border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent activatedFolder'>
+            <div
+              onClick={(e) => {
+                activeFolder(e.currentTarget);
+              }}
+              className='info flex items-center gap-x-1 px-2 py-2'
+            >
+              <span className='text-[12px]'>{notesReducer.notes.length}</span>
+              <h2 className='text-lg font-black px-2'>All</h2>
+            </div>
           </div>
-        </div>
+        )}
+
         {folderAddMode && (
           <Folder
             addMode={folderAddMode}
@@ -79,7 +120,7 @@ export default function FoldersBlock() {
         )}
         {initFolders}
       </div>
-      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute w-full h-11 cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center rounded-md bottom-0 md:bottom-6 lg:bottom-1'>
+      <div onClick={() => dispatch(switchAddMode(true))} className='createNewFolder absolute w-full h-11 cursor-pointer py-3 bg-orange-100 text-orange-500 grid place-content-center rounded-md bottom-4 md:bottom-6 lg:bottom-1'>
         <i className='iconoir-add-folder mx-auto text-2xl'></i>
         <span className='text-[11px] font-bold pl-3'>New Folder</span>
       </div>

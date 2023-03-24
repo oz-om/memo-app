@@ -5,7 +5,7 @@ import { pushFolder, removeFolder, reNameFolder, switchAddMode } from "../../../
 const { VITE_API_KEY } = process.env;
 export default function Folder(props) {
   //@ts-ignore
-  const { userReducer, folderAddMode } = useSelector((state) => state);
+  const { userReducer, moveMode } = useSelector((state) => state);
   const [newFolder, setNewFolder] = useState("");
   const [renameState, setRenameState] = useState(false);
   const [newName, setNewName] = useState("");
@@ -226,7 +226,8 @@ export default function Folder(props) {
             </div>
           </>
         ) : (
-          name != "uncategorized" && (
+          name != "uncategorized" &&
+          !moveMode.moveMode && (
             <>
               <div id={folder_id} onClick={(e) => deleteFolder(e.currentTarget.id)} className={"grid place-content-center text-red-400 cursor-pointer" + (deleteSpin && "pointer-events-none")}>
                 <i className={"mx-auto text-xl " + (deleteSpin ? "iconoir-refresh-double animate-spin" : "iconoir-trash")}></i>
