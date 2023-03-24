@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Folder from "./folder/Folder";
 import { switchAddMode, switchMoveMode, updateActivated, moveNote } from "../../store/reducers";
-import { useEffect } from "react";
 import { getFoldersBlock, useActivatedFolder } from "../../global";
 import axios from "axios";
 const { VITE_API_KEY } = process.env;
@@ -9,6 +9,7 @@ const { VITE_API_KEY } = process.env;
 export default function FoldersBlock() {
   //@ts-ignore
   const { foldersReducer, folderAddMode, activatedReducer, notesReducer, moveMode } = useSelector((state) => state);
+
   const dispatch = useDispatch();
 
   async function activeFolder(item) {
@@ -16,6 +17,7 @@ export default function FoldersBlock() {
     //check if we in moe mode
     if (moveMode.moveMode) {
       await changeNoteCategory(folder.dataset.id);
+      dispatch(switchMoveMode({ moveMode: false }));
       return;
     }
 
@@ -67,7 +69,6 @@ export default function FoldersBlock() {
     if (res.isChange) {
       dispatch(moveNote({ category: to, noteId: moveMode.noteId }));
       dispatch(updateActivated(to));
-      dispatch(switchMoveMode({ moveMode: false }));
       getFoldersBlock();
     } else {
       console.log(res.msg);
@@ -90,8 +91,14 @@ export default function FoldersBlock() {
   return (
     <div className='foldersBlock absolute top-0 w-full h-full bg-white transition-right right-[100vw] lg:foldersBlockInLg'>
       <div className='bar py-1 mb-2 shadow-md relative'>
-        <div className='basis-1/5 ml-2 text-xl cursor-pointer lg:invisible'>
-          <i className='iconoir-reply' onClick={() => goBack()}></i>
+        <div className={"basis-1/5 ml-2 text-xl cursor-pointer " + (moveMode.moveMode ? "lg:visible" : "lg:invisible")}>
+          {moveMode.moveMode ? (
+            <span className='text-xs font-bold block relative -top-1' onClick={goBack}>
+              cancel
+            </span>
+          ) : (
+            <i className='iconoir-reply' onClick={() => goBack()}></i>
+          )}
         </div>
         <h2 className='basis-10/12 text-center font-bold absolute  w-40 translate-x-[50%] right-[50%] top-0'> {moveMode.moveMode ? "select folder" : "folders"}</h2>
       </div>

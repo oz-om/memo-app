@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { pushFolder, removeFolder, reNameFolder, switchAddMode } from "../../../store/reducers";
 const { VITE_API_KEY } = process.env;
 export default function Folder(props) {
+  const { itemsCount, name, folder_id, addMode, method } = props;
   //@ts-ignore
   const { userReducer, moveMode } = useSelector((state) => state);
   const [newFolder, setNewFolder] = useState("");
@@ -12,6 +13,7 @@ export default function Folder(props) {
   const [addSpin, setAddSpin] = useState(false);
   const [saveSpin, setSaveSpin] = useState(false);
   const [deleteSpin, setDeleteSpin] = useState(false);
+  const [moveSpin, setMoveSpin] = useState(false);
   const dispatch = useDispatch();
   const ownerId = userReducer.user.id;
 
@@ -157,14 +159,17 @@ export default function Folder(props) {
       console.log(res.msg);
     }
   }
-
-  useEffect(() => {});
-  const { itemsCount, name, folder_id, addMode, method } = props;
+  useEffect(() => {
+    if (!moveMode.moveMode) {
+      setMoveSpin(false);
+    }
+  }, [moveMode.moveMode]);
   return (
     <div data-name={name} data-id={folder_id} className='folder grid grid-cols-twoCol bg-gray-100 justify-between border mx-2 mb-1 rounded-md cursor-pointer hover:bg-transparent'>
       <div
         onClick={(e) => {
           !addMode && method(e.currentTarget);
+          moveMode.moveMode && setMoveSpin(true);
         }}
         className='info flex gap-x-1 items-center w-full px-2 py-3'
       >
@@ -240,6 +245,7 @@ export default function Folder(props) {
             </>
           )
         )}
+        {moveSpin && <i className={"mx-auto text-xl iconoir-refresh-double animate-spin grid place-content-center"}></i>}
       </div>
     </div>
   );

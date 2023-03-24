@@ -72,7 +72,12 @@ export default function Note({ id, title, note, atTime, folder, bgColor, color, 
   function moveNote(e) {
     let currentOptions = e.target.parentElement.parentElement.parentElement;
     toggleOptions(e, null, null, currentOptions);
-    dispatch(switchMoveMode({ moveMode: true, noteId: id }));
+    dispatch(switchMoveMode({ moveMode: true, noteId: id, isMoving: false }));
+    if (searchMode) {
+      dispatch(switchSearchMode(false));
+      let toggleSearchUI = useToggleSearchUI(false, activatedReducer, dispatch, notesReducer.notes);
+      toggleSearchUI();
+    }
     getFoldersBlock();
   }
 
