@@ -178,6 +178,7 @@ export default function CreateBlock() {
       noteContent.oninput = function () {
         validStyle();
       };
+      noteContent.querySelectorAll("*").forEach((element) => element.setAttribute("dir", "auto"));
     }
   }
 
