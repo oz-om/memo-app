@@ -62,7 +62,7 @@ export default function Notes() {
   }, [notesReducer.notes]);
 
   return (
-    <div className='notes px-4 overflow-x-hidden overflow-y-scroll customScroll  md:notesInMd lg:notesInLg'>
+    <div className='notes px-4 pb-20 overflow-x-hidden overflow-y-scroll customScroll  md:notesInMd lg:notesInLg'>
       {notesReducer.loading ? (
         <>
           <Masonry columnsCount={2} gap={3}>

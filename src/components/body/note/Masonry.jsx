@@ -22,5 +22,5 @@ export default function Masonry({ columnsCount, gap, children }) {
     }
   }
 
-  return <div className={`flex gap-x-${gap} pb-14`}>{columns}</div>;
+  return <div className={`flex gap-x-${gap}`}>{columns}</div>;
 }

@@ -57,11 +57,11 @@ export default function Login() {
   const boxTitleStyle = "absolute tracking-[-1px] bg-white p-2 -top-6 left-1 border-blue-300 border rounded-xl text-sm text-gray-700";
 
   return (
-    <main className='h-[calc(100vh_-_52px)] overflow-auto customScroll'>
+    <main className='h-[calc(100vh_-_52px)]  overflow-auto customScroll'>
       {!userReducer.userState && userReducer.loading ? (
         <Loading />
       ) : (
-        <div className='container'>
+        <div className='container md:w-[calc(100%_-_180px)] md:left-40 md:relative md:ml-0'>
           <h2 className='text-center text-2xl font-bold px-5 mt-14 mb-8'>Get the best Memorization experience, for free!</h2>
           <div className={boxStyle}>
             <p className={boxTitleStyle} style={{ wordSpacing: "-4px" }}>

@@ -60,7 +60,7 @@ export default function Signin() {
       {!userReducer.userState && userReducer.loading ? (
         <Loading />
       ) : (
-        <div className='container'>
+        <div className='container md:w-[calc(100%_-_180px)] md:left-40 md:relative md:ml-0'>
           <div className='partOne grid place-content-center'>
             <h2 className='text-3xl font-black'>Register For Free</h2>
             <span className='font-black text-orange-300 text-center my-5'>with</span>
