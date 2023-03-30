@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { pushNote, switchNoteModifyMode, updateNote } from "../../store/reducers";
 import axios from "axios";
@@ -22,7 +22,7 @@ import "react-quill/dist/quill.snow.css";
 
 const { VITE_API_KEY } = process.env;
 
-export default function CreateBlock() {
+function CreateBlock() {
   //@ts-ignore
   const { noteModifyMode, foldersReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -80,7 +80,6 @@ export default function CreateBlock() {
       goBack();
     } else {
       setCreateSpin(false);
-      console.log(res.msg);
     }
   }
 
@@ -136,7 +135,6 @@ export default function CreateBlock() {
         cancel();
       } else {
         setSaveSpin(false);
-        console.log(res.msg);
       }
     }
   }
@@ -179,6 +177,8 @@ export default function CreateBlock() {
         validStyle();
       };
       noteContent.querySelectorAll("*").forEach((element) => element.setAttribute("dir", "auto"));
+      //@ts-ignore
+      window.noteEditor = noteContent;
     }
   }
 
@@ -268,3 +268,5 @@ export default function CreateBlock() {
     </div>
   );
 }
+
+export default React.memo(CreateBlock);

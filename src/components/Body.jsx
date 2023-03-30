@@ -2,12 +2,12 @@ import SearchAndAdd from "./body/SearchAnaAdd";
 import Bar from "./body/Bar";
 import Notes from "./body/Notes";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Editor from "./body/Editor";
 import FoldersBlock from "./body/FoldersBlock";
 
-export default function Body() {
+function Body() {
   // @ts-ignore
   const { userReducer } = useSelector((state) => state);
   const navigate = useNavigate();
@@ -32,3 +32,5 @@ export default function Body() {
     </main>
   );
 }
+
+export default React.memo(Body);

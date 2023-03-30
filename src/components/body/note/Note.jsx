@@ -94,8 +94,6 @@ export default function Note({ id, title, note, atTime, folder, bgColor, color, 
     const { title, note, id, bgColor, color } = specificNote[0];
 
     dispatch(switchNoteModifyMode({ editMode: true, title, note, id, bgColor, color }));
-    edit.parentElement.classList.toggle("w-0");
-    edit.parentElement.classList.toggle("w-20");
   }
 
   let image = {

@@ -9,9 +9,6 @@ export function getCreateBlock() {
 
   document.querySelector(".mainBody > .container").classList.toggle("-left-[100vw]");
   document.querySelector(".mainBody > .container").classList.toggle("left-0");
-
-  let NoteEditor = document.querySelector(".createBlock .noteContent .note > div");
-  // @ts-ignore
 }
 
 // get folders block
